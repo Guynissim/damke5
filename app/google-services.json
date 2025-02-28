@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "52932247092",
+    "project_id": "damka-3bd45",
+    "storage_bucket": "damka-3bd45.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:52932247092:android:bd8aeb4509f31c815d1461",
+        "android_client_info": {
+          "package_name": "com.example.damka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8WR_FKepeCIC-dg_GKsTGutxR2BjN4Vk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
