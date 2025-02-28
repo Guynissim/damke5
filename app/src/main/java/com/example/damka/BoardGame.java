@@ -3,6 +3,7 @@ package com.example.damka;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +42,7 @@ public class BoardGame extends View {
         this.isPlayer1 = isPlayer1;
         startListeningToGameSession();
     }
+
     public void startListeningToGameSession() {
         gameSessionManager.listenToGameSession(gameId, new GameSessionManager.GameStateListener() {
             @Override
@@ -71,16 +73,12 @@ public class BoardGame extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int w = canvas.getWidth() / NUM_OF_SQUARES;
-
-        // Reinitialize the board if necessary
-        if (boardState == null) {
-            initBoardState();
-            initBoard(canvas);
-        } else {
+        if (selectedSoldier == null) {
             makeSquaresArray(w);
-            // Draw all squares and soldiers
-            drawBoard(canvas);
-        }
+        } else
+            canvas.drawCircle(selectedSoldier.x,selectedSoldier.y,selectedSoldier.radius,new Paint());
+        drawBoard(canvas);
+
 
     }
 
@@ -133,66 +131,9 @@ public class BoardGame extends View {
                         squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, Color.RED, w / 3, i, j, 1);
                     else if (state == 4) // Side 2 king
                         squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, Color.BLUE, w / 3, i, j, 2);
-
                 }
                 y = y + h;
                 x = 0;
-            }
-        }
-    }
-
-    private void initBoard(Canvas canvas) {
-        int x = 0;
-        int y = 200;
-        int w = canvas.getWidth() / NUM_OF_SQUARES;
-        int h = w;
-        int color;
-        for (int i = 0; i < NUM_OF_SQUARES; i++) {
-            for (int j = 0; j < NUM_OF_SQUARES; j++) {
-
-                if (i % 2 == 0) //Even Line
-                {
-                    if (j % 2 == 0)
-                        color = Color.argb(175, 150, 75, 0);
-                    else
-                        color = Color.BLACK;
-                } else //Odd Line
-                {
-                    if (j % 2 == 0)
-                        color = Color.BLACK;
-                    else
-                        color = Color.argb(175, 150, 75, 0);
-
-                }
-                squares[i][j] = new Square(x, y, color, w, h, i, j);
-                x = x + w;
-                if (color == Color.BLACK) {
-                    if (i < 3) {
-                        squares[i][j].soldier = new Soldier(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, Color.RED, w / 3, i, j, 1);
-                    }
-                    if (i > 4) {
-                        squares[i][j].soldier = new Soldier(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, Color.BLUE, w / 3, i, j, 2);
-                    }
-                }
-                squares[i][j].draw(canvas);
-            }
-            y = y + h;
-            x = 0;
-        }
-    }
-
-    private void initBoardState() {
-        boardState = new int[NUM_OF_SQUARES][NUM_OF_SQUARES];
-
-        for (int i = 0; i < NUM_OF_SQUARES; i++) {
-            for (int j = 0; j < NUM_OF_SQUARES; j++) {
-                if (i < 3 && (i + j) % 2 != 0) {
-                    boardState[i][j] = 1; // Side 1 soldier
-                } else if (i > 4 && (i + j) % 2 != 0) {
-                    boardState[i][j] = 2; // Side 2 soldier
-                } else {
-                    boardState[i][j] = 0; // Empty square
-                }
             }
         }
     }
@@ -287,6 +228,9 @@ public class BoardGame extends View {
                     if (!isPlayerTurn) {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "Wait for you turn!", Toast.LENGTH_SHORT).show();
+                    } else if (isPlayer1 != selectedSoldier.side) {
+                        selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
+                        Toast.makeText(getContext(), "These are not your soldiers!", Toast.LENGTH_SHORT).show();
                     } else {
                         Log.d("ACTION_UP", "Released soldier.");
                         updateColumnAndRow(selectedSoldier);
