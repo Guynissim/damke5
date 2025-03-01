@@ -6,36 +6,35 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#EFEFEF"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:background="#EFEFEF">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/game_id_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Game ID: N/A"
-            android:textSize="18sp"
-            android:textColor="#000" />
+            android:textColor="#000"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/player1_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Player 1: N/A"
-            android:textSize="16sp"
-            android:textColor="#333" />
+            android:textColor="#000"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/player2_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Player 2: N/A"
-            android:textSize="16sp"
-            android:textColor="#333" />
+            android:textColor="#000"
+            android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- Game Board Placeholder -->
     <FrameLayout
         android:id="@+id/board_container"
         android:layout_width="match_parent"
