@@ -1,4 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.YourAppName" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorPrimaryVariant">#3700B3</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:windowBackground">#FFFFFF</item>
+    </style>
+
     <style name="MyButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:background">@drawable/rounded_button</item>
         <item name="backgroundTint">?attr/colorOnPrimary</item> <!-- Forces custom color -->
