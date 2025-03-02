@@ -94,6 +94,18 @@ public class GameSessionManager {
         });
     }
 
+    public void updateWinner(String gameId, int winnerSide) {
+        if (gameId == null || gameId.isEmpty()) {
+            Log.e("GameSessionManager", "Game ID is null or empty. Cannot update winner.");
+            return;
+        }
+
+        DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);
+        gameRef.child("winnerside").setValue(winnerSide)
+                .addOnSuccessListener(aVoid -> Log.d("GameSessionManager", "Winner updated successfully: " + winnerSide))
+                .addOnFailureListener(e -> Log.e("GameSessionManager", "Failed to update winner", e));
+    }
+
     private List<List<Integer>> getInitialBoardState() {
         int[][] initialBoard = {
                 {0, 1, 0, 1, 0, 1, 0, 1},

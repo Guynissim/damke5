@@ -3,7 +3,6 @@ package com.example.damka;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -151,18 +150,13 @@ public class BoardGame extends View {
         gameState.put("turn", isPlayer1 == 2);// player1 next - true, player2 next - false
         gameSessionManager.updateGameState(gameId, gameState);
         invalidate();
-        if(winnerside!=0)
-        {
-            gameState.put("winnerside",winnerside);
-        }
     }
 
     private int[][] getBoardStateFromSquares() {
         int[][] updatedBoardState = new int[NUM_OF_SQUARES][NUM_OF_SQUARES];
         for (int i = 0; i < NUM_OF_SQUARES; i++) {
             for (int j = 0; j < NUM_OF_SQUARES; j++) {
-                updatedBoardState[i][j] = squares[i][j].getState(); // Use getState() here
-                Log.d("Square State", "Square[" + i + "][" + j + "]: " + squares[i][j].getState());
+                updatedBoardState[i][j] = squares[i][j].getState();
             }
         }
         return updatedBoardState;
@@ -272,7 +266,7 @@ public class BoardGame extends View {
                             Log.d("Snap Success", "King snapped to valid square: " + square.x + ", " + square.y);
                             invalidate();
                             if (isSoldierJumped) {
-                                displayWinner();
+                                checkAndDisplayWinner();
                             }
                             return true;
                         }
@@ -290,7 +284,7 @@ public class BoardGame extends View {
                         handleMove();
                         invalidate();
                         if (isSoldierJumped) {
-                            winnerside = isGameOver();//TODO: Add wins/losses in the FireStore.
+                            winnerside = isGameOver();
                             if (winnerside == 1)
                                 Toast.makeText(getContext(), "The winner side is BLUE!!!", Toast.LENGTH_SHORT).show();
                             if (winnerside == 2)
@@ -438,12 +432,12 @@ public class BoardGame extends View {
             if (soldier.side == 1) {
                 if (isValidJumpForSide1(soldier)) {
                     isSoldierJumped = true;
-                    displayWinner();
+                    checkAndDisplayWinner();
                     return true;
                 }
             } else if (isValidJumpForSide2(soldier)) {
                 isSoldierJumped = true;
-                displayWinner();
+                checkAndDisplayWinner();
                 return true;
             }
         }
@@ -505,13 +499,18 @@ public class BoardGame extends View {
         return 0; // This shouldn't happen, but just in case
     }
 
-    public void displayWinner() {
+    public void checkAndDisplayWinner() {
         if (isSoldierJumped == true) {
             int winnerside = isGameOver();
-            if (winnerside == 1)
-                Toast.makeText(getContext(), "The winner side is Red!!!", Toast.LENGTH_SHORT).show();
-            if (winnerside == 2)
-                Toast.makeText(getContext(), "The winner side is Blue!!!", Toast.LENGTH_SHORT).show();
+            if (winnerside == 0)
+                return; // No winner yet
+            // Ensure gameId is not null
+            if (gameId == null || gameId.isEmpty()) {
+                Log.e("BoardGame", "Game ID is null! Cannot update winner.");
+                return;
+            }
+            Toast.makeText(getContext(), "The winner side is " + (winnerside == 1 ? "Red" : "Blue") + "!!!", Toast.LENGTH_SHORT).show();
+            gameSessionManager.updateWinner(gameId, winnerside);
         }
     }
 }
