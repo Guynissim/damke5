@@ -68,18 +68,12 @@ public class BoardGame extends View {
         });
     }
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int w = canvas.getWidth() / NUM_OF_SQUARES;
-        if (selectedSoldier == null) {
-            makeSquaresArray(w);
-        } else
-            canvas.drawCircle(selectedSoldier.x,selectedSoldier.y,selectedSoldier.radius,new Paint());
+        makeSquaresArray(w);
         drawBoard(canvas);
-
-
     }
 
     private void drawBoard(Canvas canvas) {
@@ -88,6 +82,8 @@ public class BoardGame extends View {
                 Square square = squares[i][j];
                 if (square != null) {
                     square.draw(canvas);
+                    if (square.soldier != null)
+                        square.soldier.draw(canvas);
                 }
             }
         }
@@ -214,7 +210,6 @@ public class BoardGame extends View {
 
             case MotionEvent.ACTION_MOVE:
                 if (selectedSoldier != null) {
-                    // Show a visual preview (optional, can add logic for ghost positioning)
                     int centerX = (int) touchX;
                     int centerY = (int) touchY;
                     selectedSoldier.Move(centerX, centerY);
@@ -290,7 +285,7 @@ public class BoardGame extends View {
                         handleMove();
                         invalidate();
                         if (isSoldierJumped) {
-                            int winnerside = isGameOver();
+                            int winnerside = isGameOver();//TODO: Add wins/losses in the FireStore.
                             if (winnerside == 1)
                                 Toast.makeText(getContext(), "The winner side is BLUE!!!", Toast.LENGTH_SHORT).show();
                             if (winnerside == 2)
@@ -472,7 +467,6 @@ public class BoardGame extends View {
         // Update only when soldier has successfully snapped into this square
         soldier.lastX = soldier.x;
         soldier.lastY = soldier.y;
-
         // Update soldier's current row and column
         soldier.lastColumn = soldier.column;
         soldier.lastRow = soldier.row;

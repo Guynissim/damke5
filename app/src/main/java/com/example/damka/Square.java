@@ -23,8 +23,6 @@ public class Square extends Shape {
 
     public void draw(Canvas canvas) {
         canvas.drawRect(x, y, x + width, y + height, paint);
-        if(this.soldier!=null)
-            soldier.draw(canvas);
     }
 
     public boolean didUserTouchMe(int xu, int yu) {
