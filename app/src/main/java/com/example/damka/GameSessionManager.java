@@ -37,6 +37,10 @@ public class GameSessionManager {
                 Log.e("DEBUG", "Failed to create game session: " + task.getException());
             }
         });
+
+        DatabaseReference gameSessionRef = gameRef.child(gameId);
+        // Remove the game if Player 1 disconnects
+        gameSessionRef.child("player1").onDisconnect().removeValue();
     }
 
     public void joinGameSession(String gameId, String playerId) {

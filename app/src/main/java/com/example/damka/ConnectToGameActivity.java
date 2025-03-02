@@ -57,34 +57,33 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
                 int isPlayer1 = 1;
                 Log.d("DEBUG", "Successfully added game: " + gameId);
                 gameSessionManager.createGameSession(gameId, currentPlayerId);
-                startGameActivity(gameId, currentPlayerId,isPlayer1);
+                startGameActivity(gameId, currentPlayerId, isPlayer1);
             } else {
                 Log.e("DEBUG", "Failed to create game: " + task.getException().getMessage());
             }
         });
     }
+
     private void joinGame() {
         String currentPlayerId = authManager.getCurrentUserId();
         firestoreManager.getWaitingGame(task -> {
             if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                 int isPlayer1 = 2;
                 String gameId = task.getResult().getDocuments().get(0).getId();
-                Log.d("DEBUG", "Joining random game: " + gameId);
+                Log.d("DEBUG", "Joining a game: " + gameId);
 
                 gameSessionManager.joinGameSession(gameId, currentPlayerId);
 
                 firestoreManager.removeGameFromWaitingList(gameId, task2 -> {
                     if (task2.isSuccessful()) {
                         Log.d("DEBUG", "Successfully removed waiting game: " + gameId);
-                    } else {
-                        Log.e("DEBUG", "Failed to remove waiting game: " + gameId);
                     }
                 });
 
                 startGameActivity(gameId, currentPlayerId, isPlayer1);
             } else {
                 Log.d("DEBUG", "No random games available.");
-                Toast.makeText(this, "No random games available. Try creating a game.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No games are available. Try creating a game.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -94,7 +93,7 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra("gameId", gameId);
         intent.putExtra("playerId", playerId);
-        intent.putExtra("isPlayer1",isPlayer1);
+        intent.putExtra("isPlayer1", isPlayer1);
         startActivity(intent);
     }
 }

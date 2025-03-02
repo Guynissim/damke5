@@ -2,6 +2,7 @@ package com.example.damka;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.SetOptions;
@@ -38,7 +39,9 @@ public class FireStoreManager {
 
     // Get a waiting game for Player 2
     public void getWaitingGame(OnCompleteListener<QuerySnapshot> listener) {
-        db.collection("WaitingGames").limit(1)
+        db.collection("waitingGames")
+                .orderBy("timestamp", Query.Direction.DESCENDING) // Order by latest
+                .limit(1) // Get only the most recent game
                 .get()
                 .addOnCompleteListener(listener);
     }
