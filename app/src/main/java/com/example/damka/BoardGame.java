@@ -23,7 +23,7 @@ public class BoardGame extends View {
     private final int NUM_OF_SQUARES = 8;
     private Soldier selectedSoldier = null;
     private boolean isSoldierJumped = false; // Checks if jump
-    private int winnerside = 0;//Red - 1,Blue - 2
+    private int winnerside = 0;//Red - 1,Blue - 2,no winner yet - 0
 
     // Fields for the Firebase:
     private GameSessionManager gameSessionManager;
@@ -151,6 +151,10 @@ public class BoardGame extends View {
         gameState.put("turn", isPlayer1 == 2);// player1 next - true, player2 next - false
         gameSessionManager.updateGameState(gameId, gameState);
         invalidate();
+        if(winnerside!=0)
+        {
+            gameState.put("winnerside",winnerside);
+        }
     }
 
     private int[][] getBoardStateFromSquares() {

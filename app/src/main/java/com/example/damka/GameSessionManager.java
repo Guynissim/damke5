@@ -28,7 +28,8 @@ public class GameSessionManager {
         initialState.put("player1", playerId);
         initialState.put("player2", null);
         initialState.put("turn", true); //player1 - true, player2 - false
-        initialState.put("boardState", getInitialBoardState()); // Initialize board properly
+        initialState.put("boardState", getInitialBoardState());
+        initialState.put("winnerside", 0); // player1 - 1,player2 - 2, no winner yet - 0
 
         gameRef.child(gameId).setValue(initialState).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
