@@ -1,6 +1,7 @@
 package com.example.damka;
 
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -71,6 +72,14 @@ public class FireStoreManager {
     public void doesGameExist(String gameId, OnCompleteListener<DocumentSnapshot> listener) {
         db.collection("Games").document(gameId)
                 .get()
+                .addOnCompleteListener(listener);
+    }
+    public void updateUserStats(String userId, boolean isWin, OnCompleteListener<Void> listener) {
+        // Determine whether to increment wins or losses
+        String field = isWin ? "wins" : "losses";
+
+        db.collection("Users").document(userId)
+                .update(field, FieldValue.increment(1)) // Increment the specified field
                 .addOnCompleteListener(listener);
     }
 }
