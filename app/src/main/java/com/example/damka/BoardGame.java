@@ -23,6 +23,7 @@ public class BoardGame extends View {
     private final int NUM_OF_SQUARES = 8;
     private Soldier selectedSoldier = null;
     private boolean isSoldierJumped = false; // Checks if jump
+    private int winnerside;//Red - 1,Blue - 2
 
     // Fields for the Firebase:
     private GameSessionManager gameSessionManager;
@@ -285,7 +286,7 @@ public class BoardGame extends View {
                         handleMove();
                         invalidate();
                         if (isSoldierJumped) {
-                            int winnerside = isGameOver();//TODO: Add wins/losses in the FireStore.
+                            winnerside = isGameOver();//TODO: Add wins/losses in the FireStore.
                             if (winnerside == 1)
                                 Toast.makeText(getContext(), "The winner side is BLUE!!!", Toast.LENGTH_SHORT).show();
                             if (winnerside == 2)
