@@ -23,7 +23,7 @@ public class BoardGame extends View {
     private final int NUM_OF_SQUARES = 8;
     private Soldier selectedSoldier = null;
     private boolean isSoldierJumped = false; // Checks if jump
-    private int winnerside;//Red - 1,Blue - 2
+    private int winnerside = 0;//Red - 1,Blue - 2
 
     // Fields for the Firebase:
     private GameSessionManager gameSessionManager;
