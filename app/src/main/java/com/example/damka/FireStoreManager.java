@@ -74,10 +74,10 @@ public class FireStoreManager {
                 .get()
                 .addOnCompleteListener(listener);
     }
+
     public void updateUserStats(String userId, boolean isWin, OnCompleteListener<Void> listener) {
         // Determine whether to increment wins or losses
         String field = isWin ? "wins" : "losses";
-
         db.collection("Users").document(userId)
                 .update(field, FieldValue.increment(1)) // Increment the specified field
                 .addOnCompleteListener(listener);

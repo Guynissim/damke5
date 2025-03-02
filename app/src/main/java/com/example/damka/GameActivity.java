@@ -1,7 +1,6 @@
 package com.example.damka;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,19 +14,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
-import java.util.EventListener;
 import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
     private TextView player1Text, player2Text, gameIdText;
     private String playerName1, playerName2;
     private GameSessionManager gameSessionManager;
+    private FireStoreManager firestoreManager;
     private BoardGame boardGame;
     private String gameId, playerId;
-    private int isPlayer1;
+    private int playerSide;// 1 - Player1, 2 - Player2, 0 - Error
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +35,12 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = getIntent();
         gameId = intent.getStringExtra("gameId");
         playerId = intent.getStringExtra("playerId");
-        isPlayer1 = intent.getIntExtra("isPlayer1", 0); // 1 - Player1, 2 - Player2, 0 - Error
+        playerSide = intent.getIntExtra("isPlayer1", 0); // 1 - Player1, 2 - Player2, 0 - Error
 
         gameSessionManager = new GameSessionManager();
-        FireStoreManager firestoreManager = new FireStoreManager();
+        firestoreManager = new FireStoreManager();
 
-        if (isPlayer1 == 0)
+        if (playerSide == 0)
             Log.d("Error GameActivity", "isPlayer1 = 0");
 
         // UI Elements
@@ -58,7 +55,7 @@ public class GameActivity extends AppCompatActivity {
         // Fetch player name and update UI inside callback
         firestoreManager.getUserProfile(playerId, task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
-                if (isPlayer1 == 1) {
+                if (playerSide == 1) {
                     playerName1 = task.getResult().getString("username");
                     Log.d("DEBUG", "Username(Player1): " + playerName1);
                     player1Text.setText("Player 1: " + playerName1);
@@ -84,7 +81,7 @@ public class GameActivity extends AppCompatActivity {
                 int[][] boardState = boardStateFromFB != null ? convertListToArray(boardStateFromFB) : null;
 
                 // Create BoardGame after getting boardState
-                boardGame = new BoardGame(this, gameSessionManager, gameId, playerId,isPlayer1, boardState);
+                boardGame = new BoardGame(this, gameSessionManager, gameId, playerId, playerSide, boardState);
 
                 FrameLayout boardContainer = findViewById(R.id.board_container);
                 boardContainer.addView(boardGame);
@@ -104,7 +101,7 @@ public class GameActivity extends AppCompatActivity {
         gameRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String player2Id = snapshot.getValue(String.class);
+                String player2Id = (String) snapshot.getValue();
                 if (player2Id != null) {
                     Log.d("DEBUG", "Player 2 has joined! Player 1's movement is enabled.");
                     // enable player1's movement
@@ -136,6 +133,34 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("GameActivity", "Error in listenForBoardState()");
+            }
+        });
+    }
+
+    public void listenForWinnerSideChange(String gameId) {
+        DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);
+        gameRef.child("winnerside").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int winnerside = (int) snapshot.getValue();
+                // Check if the current player is the winner
+                boolean isWin = (winnerside == playerSide);
+                // Update user stats accordingly
+                firestoreManager.updateUserStats(playerId, isWin, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("GameActivity", isWin ? "Win recorded" : "Loss recorded");
+                    } else {
+                        Log.e("GameActivity", "Failed to update user stats", task.getException());
+                    }
+                });
+
+                // Remove listener to prevent duplicate updates
+                gameRef.child("winnerside").removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("GameActivity", "Error in listenForWinnerSideChange()", error.toException());
             }
         });
     }
