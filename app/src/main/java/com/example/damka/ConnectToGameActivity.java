@@ -64,6 +64,32 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
         });
     }
 
+    private void joinGame2() {
+        String currentPlayerId = authManager.getCurrentUserId();
+        firestoreManager.getWaitingGame(task -> {
+            if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                int isPlayer1 = 2;
+                String gameId = task.getResult().getDocuments().get(0).getId();
+                Log.d("DEBUG", "Joining random game: " + gameId);
+
+                gameSessionManager.joinGameSession(gameId, currentPlayerId);
+
+                firestoreManager.removeGameFromWaitingList(gameId, task2 -> {
+                    if (task2.isSuccessful()) {
+                        Log.d("DEBUG", "Successfully removed waiting game: " + gameId);
+                    } else {
+                        Log.e("DEBUG", "Failed to remove waiting game: " + gameId);
+                    }
+                });
+
+                startGameActivity(gameId, currentPlayerId, isPlayer1);
+            } else {
+                Log.d("DEBUG", "No random games available.");
+                Toast.makeText(this, "No random games available. Try creating a game.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void joinGame() {
         String currentPlayerId = authManager.getCurrentUserId();
         firestoreManager.getWaitingGame(task -> {
@@ -79,11 +105,10 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
                         Log.d("DEBUG", "Successfully removed waiting game: " + gameId);
                     }
                 });
-
                 startGameActivity(gameId, currentPlayerId, isPlayer1);
             } else {
-                Log.d("DEBUG", "No random games available.");
-                Toast.makeText(this, "No games are available. Try creating a game.", Toast.LENGTH_SHORT).show();
+                Log.d("DEBUG", "No games available.");
+                Toast.makeText(this, "No games available. Try creating a game.", Toast.LENGTH_SHORT).show();
             }
         });
     }
