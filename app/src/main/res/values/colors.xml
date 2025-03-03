@@ -5,7 +5,27 @@
     <color name="warm_black">#1A1A1A</color>
     <color name="cream">#F2E8C6</color>
     <color name="chocolate_brown">#5D4037</color>
+
+    <!-- Accent colors -->
     <color name="gold">#D4AF37</color>
+    <color name="forest_green">#2E7D32</color>
+
+    <!-- Background variations -->
+    <color name="cream_dark">#E8DECB</color>
+
+    <!-- Opacity variations -->
+    <color name="warm_black_40">#661A1A1A</color>
+
+    <!-- Traditional app colors required by Android -->
+    <color name="colorPrimary">@color/burgundy</color>
+    <color name="colorPrimaryDark">@color/warm_black</color>
+    <color name="colorAccent">@color/gold</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">@color/warm_black</color>
+    <color name="text_secondary">@color/chocolate_brown</color>
+    <color name="text_on_dark">@color/cream</color>
+
 
     <!-- Legacy colors (for compatibility) -->
     <color name="lightWood">#F2E8C6</color>
