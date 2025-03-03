@@ -2,57 +2,87 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightWood"
+    android:background="@color/warm_black"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="24dp">
 
+    <!-- Title with stylish text -->
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:fontFamily="serif"
+        android:text="Checkers"
+        android:textColor="@color/burgundy"
+        android:textSize="48sp"
+        android:textStyle="bold" />
+
+    <!-- Subtitle text -->
+    <TextView
+        android:id="@+id/subtitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
-        android:text="Checkers Game"
-        android:textSize="40dp"
-        android:textColor="@color/darkWood"
-        android:textStyle="bold"
-        />
+        android:fontFamily="sans-serif-light"
+        android:text="Classic Board Game"
+        android:textColor="@color/chocolate_brown"
+        android:textSize="18sp"
+        android:textStyle="italic" />
 
-    <Button
-        android:id="@+id/newGameButton"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
-        android:text="Start New Game"
-        android:gravity="center"
-        android:textSize="18dp"
-        android:textColor="@android:color/white"
-        android:background="@drawable/rounded_button"
-        />
+    <!-- Card container for buttons -->
+    <LinearLayout
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/card_background"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <Button
-        android:id="@+id/scoreboardButton"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
-        android:text="View Scoreboard"
-        android:gravity="center"
-        android:textSize="18dp"
-        android:textColor="@android:color/white"
-        android:background="@drawable/rounded_button"
-        />
+        <!-- Start Game Button -->
+        <Button
+            android:id="@+id/newGameButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/primary_button_background"
+            android:fontFamily="sans-serif-medium"
+            android:text="Start New Game"
+            android:textColor="@color/cream"
+            android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/loginLogoutButton"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:text="Login"
-        android:gravity="center"
-        android:textSize="18dp"
-        android:textColor="@android:color/white"
-        android:background="@drawable/rounded_button"/>
+        <!-- Scoreboard Button -->
+        <Button
+            android:id="@+id/scoreboardButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/secondary_button_background"
+            android:fontFamily="sans-serif-medium"
+            android:text="View Scoreboard"
+            android:textColor="@color/cream"
+            android:textSize="18sp" />
+
+        <!-- Login Button -->
+        <Button
+            android:id="@+id/loginLogoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/tertiary_button_background"
+            android:fontFamily="sans-serif-medium"
+            android:text="Login"
+            android:textColor="@color/warm_black"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <!-- Version info at bottom -->
+    <TextView
+        android:id="@+id/versionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Version 1.0"
+        android:textColor="#80FFFFFF"
+        android:textSize="14sp" />
 
 </LinearLayout>

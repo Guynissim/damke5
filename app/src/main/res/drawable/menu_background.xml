@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base background color -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cream" />
+        </shape>
+    </item>
+
+    <!-- Subtle checkerboard pattern -->
+    <item>
+        <bitmap
+            android:src="@drawable/checker_pattern"
+            android:tileMode="repeat"
+            android:alpha="0.05" />
+    </item>
+
+    <!-- Top gradient for depth -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="90"
+                android:startColor="#00000000"
+                android:endColor="@color/cream_dark"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>

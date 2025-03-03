@@ -1,7 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.Damka323" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Customize your light theme here -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/burgundy</item>
+        <item name="colorPrimaryDark">@color/warm_black</item>
+        <item name="colorAccent">@color/gold</item>
+        <item name="android:windowBackground">@color/cream</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="buttonStyle">@style/ButtonStyle</item>
     </style>
 
-    <style name="Theme.Damka323" parent="Base.Theme.Damka323" />
+    <style name="ButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/text_on_dark</item>
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
 </resources>

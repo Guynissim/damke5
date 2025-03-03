@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="darkWood">#6D4C41</color>
-    <color name="lightWood">#A1887F</color>
-    <color name="boardGreen">#4CAF50</color>
-    <color name="boardBrown">#795548</color>
+    <!-- Core colors -->
+    <color name="burgundy">#8B2635</color>
+    <color name="warm_black">#1A1A1A</color>
+    <color name="cream">#F2E8C6</color>
+    <color name="chocolate_brown">#5D4037</color>
+    <color name="gold">#D4AF37</color>
+
+    <!-- Legacy colors (for compatibility) -->
+    <color name="lightWood">#F2E8C6</color>
+    <color name="darkWood">#5D4037</color>
 </resources>
