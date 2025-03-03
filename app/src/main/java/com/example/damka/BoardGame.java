@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,14 @@ public class BoardGame extends View {
     private Soldier selectedSoldier = null;
     private boolean isSoldierJumped = false; // Checks if jump
     private int winnerside = 0;//Red - 1,Blue - 2,no winner yet - 0
+
+    //Colors:
+    private final int playerOneColor;
+    private final int playerTwoColor;
+    private final int kingOneHighlight;
+    private final int kingTwoHighlight;
+    private int crown;
+
 
     // Fields for the Firebase:
     private GameSessionManager gameSessionManager;
@@ -40,6 +49,10 @@ public class BoardGame extends View {
         this.playerId = playerId;
         this.boardState = boardState;
         this.isPlayer1 = isPlayer1;
+        playerOneColor = ContextCompat.getColor(getContext(), R.color.soldier_player_one);
+        playerTwoColor = ContextCompat.getColor(getContext(), R.color.soldier_player_two);
+        kingOneHighlight = ContextCompat.getColor(getContext(), R.color.king_highlight_one);
+        kingTwoHighlight = ContextCompat.getColor(getContext(), R.color.king_highlight_two);
         startListeningToGameSession();
     }
 
@@ -118,15 +131,14 @@ public class BoardGame extends View {
                     x = x + w;
 
                     // Create soldiers based on the state
-
                     if (state == 1)  // Side 1 soldier
-                        squares[i][j].soldier = new Soldier(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, Color.RED, w / 3, i, j, 1);
+                        squares[i][j].soldier = new Soldier(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, playerOneColor, w / 3, i, j, 1);
                     else if (state == 2)  // Side 2 soldier
-                        squares[i][j].soldier = new Soldier(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, Color.BLUE, w / 3, i, j, 2);
+                        squares[i][j].soldier = new Soldier(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, playerTwoColor, w / 3, i, j, 2);
                     else if (state == 3) // Side 1 king
-                        squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, Color.RED, w / 3, i, j, 1);
+                        squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, playerOneColor, kingOneHighlight, w / 3, i, j, 1);
                     else if (state == 4) // Side 2 king
-                        squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, Color.BLUE, w / 3, i, j, 2);
+                        squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, playerTwoColor, kingTwoHighlight, w / 3, i, j, 2);
                 }
                 y = y + h;
                 x = 0;
@@ -306,9 +318,12 @@ public class BoardGame extends View {
         int row = soldier.row;
         int color = soldier.color;
         int radius = soldier.radius;
-        return new King(x, y, color, radius, column, row, side);
+        if (side == 1)
+            crown = kingOneHighlight;
+        if (side == 2)
+            crown = kingTwoHighlight;
+        return new King(x, y, color, crown, radius, column, row, side);
     }
-    //works perfectly but problematic when jumping on 2 soldiers in a row.
 
     public boolean isValidMove(King king) {
         int columnStep = Math.abs(king.column - king.lastColumn);

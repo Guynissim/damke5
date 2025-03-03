@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 public class Soldier extends Shape {
-    protected Paint p;
+    protected Paint paint;
     protected int radius, lastX, lastY, column, row, lastColumn, lastRow;
     protected final int side;
 
@@ -12,8 +12,8 @@ public class Soldier extends Shape {
         super(x, y, color);
         this.radius = radius;
         this.side = side;
-        p = new Paint();
-        p.setColor(color);
+        paint = new Paint();
+        paint.setColor(color);
         lastX = x;
         lastY = y;
         this.column = column;
@@ -23,7 +23,7 @@ public class Soldier extends Shape {
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawCircle(x, y, radius, p);
+        canvas.drawCircle(x, y, radius, paint);
     }
 
     protected void Move(int x, int y) {

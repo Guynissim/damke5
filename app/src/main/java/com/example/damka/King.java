@@ -5,19 +5,21 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 public class King extends Soldier{
-    public King(int x, int y, int color, int radius,int column,int row, int side) {
+    private int crown;
+    public King(int x, int y, int color,int crown, int radius,int column,int row, int side) {
         super(x, y, color, radius,column,row, side);
         lastX = x;
         lastY = y;
         lastColumn = column;
         lastRow = row;
+        this.crown = crown;
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
         Paint paint = new Paint();
-        paint.setColor(Color.YELLOW);
+        paint.setColor(crown);
         canvas.drawCircle(x,y,radius/2, paint);
     }
     @Override

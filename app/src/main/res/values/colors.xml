@@ -26,8 +26,13 @@
     <color name="text_secondary">@color/chocolate_brown</color>
     <color name="text_on_dark">@color/cream</color>
 
-
     <!-- Legacy colors (for compatibility) -->
     <color name="lightWood">#F2E8C6</color>
     <color name="darkWood">#5D4037</color>
+
+    <!-- Add these for your checker pieces -->
+    <color name="soldier_player_one">#8B0000</color> <!-- Dark red/burgundy -->
+    <color name="soldier_player_two">#191970</color> <!-- Midnight blue -->
+    <color name="king_highlight_one">#FFD700</color> <!-- Gold highlight for kings -->
+    <color name="king_highlight_two">#C0C0C0</color> <!-- Silver highlight for kings -->
 </resources>
