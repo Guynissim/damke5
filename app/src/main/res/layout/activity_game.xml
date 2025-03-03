@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color_4">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#EFEFEF"
+        android:background="@color/background_color_4"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -14,24 +16,27 @@
             android:id="@+id/game_id_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
             android:text="Game ID: N/A"
-            android:textColor="#000"
+            android:textColor="@color/burgundy"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/player1_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
             android:text="Player 1: N/A"
-            android:textColor="#000"
+            android:textColor="@color/burgundy"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/player2_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
             android:text="Player 2: N/A"
-            android:textColor="#000"
+            android:textColor="@color/burgundy"
             android:textSize="16sp" />
     </LinearLayout>
 

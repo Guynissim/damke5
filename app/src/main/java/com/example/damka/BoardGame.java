@@ -26,11 +26,15 @@ public class BoardGame extends View {
     private int winnerside = 0;//Red - 1,Blue - 2,no winner yet - 0
 
     //Colors:
+    private int crown;
     private final int playerOneColor;
     private final int playerTwoColor;
-    private final int kingOneHighlight;
-    private final int kingTwoHighlight;
-    private int crown;
+    private final int kingOneCrown;
+    private final int kingTwoCrown;
+
+    private final int squareOne;
+    private final int squareTwo;
+
 
 
     // Fields for the Firebase:
@@ -51,8 +55,10 @@ public class BoardGame extends View {
         this.isPlayer1 = isPlayer1;
         playerOneColor = ContextCompat.getColor(getContext(), R.color.soldier_player_one);
         playerTwoColor = ContextCompat.getColor(getContext(), R.color.soldier_player_two);
-        kingOneHighlight = ContextCompat.getColor(getContext(), R.color.king_highlight_one);
-        kingTwoHighlight = ContextCompat.getColor(getContext(), R.color.king_highlight_two);
+        kingOneCrown = ContextCompat.getColor(getContext(), R.color.king_crown_one);
+        kingTwoCrown = ContextCompat.getColor(getContext(), R.color.king_crown_two);
+        squareOne = ContextCompat.getColor(getContext(), R.color.square_one);
+        squareTwo = ContextCompat.getColor(getContext(), R.color.square_two);
         startListeningToGameSession();
     }
 
@@ -116,15 +122,15 @@ public class BoardGame extends View {
                     if (i % 2 == 0) //Even Line
                     {
                         if (j % 2 == 0)
-                            color = Color.argb(175, 150, 75, 0);
+                            color = squareOne;
                         else
-                            color = Color.BLACK;
+                            color = squareTwo;
                     } else //Odd Line
                     {
                         if (j % 2 == 0)
-                            color = Color.BLACK;
+                            color = squareTwo;
                         else
-                            color = Color.argb(175, 150, 75, 0);
+                            color = squareOne;
 
                     }
                     squares[i][j] = new Square(x, y, color, w, h, i, j);
@@ -136,9 +142,9 @@ public class BoardGame extends View {
                     else if (state == 2)  // Side 2 soldier
                         squares[i][j].soldier = new Soldier(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, playerTwoColor, w / 3, i, j, 2);
                     else if (state == 3) // Side 1 king
-                        squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, playerOneColor, kingOneHighlight, w / 3, i, j, 1);
+                        squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, playerOneColor, kingOneCrown, w / 3, i, j, 1);
                     else if (state == 4) // Side 2 king
-                        squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, playerTwoColor, kingTwoHighlight, w / 3, i, j, 2);
+                        squares[i][j].soldier = new King(w / 2 + squares[i][j].x, h / 2 + squares[i][j].y, playerTwoColor, kingTwoCrown, w / 3, i, j, 2);
                 }
                 y = y + h;
                 x = 0;
@@ -319,9 +325,9 @@ public class BoardGame extends View {
         int color = soldier.color;
         int radius = soldier.radius;
         if (side == 1)
-            crown = kingOneHighlight;
+            crown = kingOneCrown;
         if (side == 2)
-            crown = kingTwoHighlight;
+            crown = kingTwoCrown;
         return new King(x, y, color, crown, radius, column, row, side);
     }
 
