@@ -9,8 +9,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
-        android:text=" There are 2 ways to play the game.\n players can create a game or join one."
+        android:layout_marginBottom="40dp"
+        android:text=" There are 2 ways to play the game.\n create a game or join a game!"
+        android:fontFamily="serif"
         android:textSize="23dp"
         android:textStyle="bold"></TextView>
 
@@ -23,6 +24,7 @@
             android:id="@+id/createGameButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="serif"
             android:layout_gravity="center"
             android:text="Create a new game"
             android:textSize="18dp"></Button>
@@ -32,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="serif"
             android:text="Join a game"
             android:textSize="20dp"></Button>
     </LinearLayout>

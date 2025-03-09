@@ -7,7 +7,7 @@
     <color name="chocolate_brown">#5D4037</color>
 
     <!-- Accent colors -->
-    <color name="gold">#D4AF37</color>
+    <color name="gold">#9C7D1A</color>
     <color name="forest_green">#2E7D32</color>
 
     <!-- Background variations -->
@@ -15,7 +15,10 @@
     <color name="background_color_1">#B8C0A9</color>
     <color name="background_color_2">#A9A295</color>
     <color name="background_color_3">#D6CCA9</color>
-    <color name="DarkTaupeGray">#49443A </color>
+    <color name="DeepBlue">#0148FF</color>
+    <color name="DarkOlive">#3C4D03</color>
+    <color name="WarmBeige">#D8BCAB</color>
+
 
     <!-- Opacity variations -->
     <color name="warm_black_40">#661A1A1A</color>
