@@ -23,6 +23,7 @@ import java.util.List;
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView player1Text, player2Text, gameIdText;
     private Button QuitButton;
+    private CustomDialog customDialog;
     private String player1Name, player2Name, gameId, playerId, player1Id, player2Id;
     private int playerSide;// 1 - Player1, 2 - Player2, 0 - Error
     private GameSessionManager gameSessionManager;
@@ -50,10 +51,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameIdText = findViewById(R.id.game_id_text);
         gameIdText.setText("Game ID: " + gameId);
 
+        customDialog = new CustomDialog(this);
+        customDialog.setContentView(R.layout.activity_custom_dialog);
+
         player1Text = findViewById(R.id.player1_name);
         player2Text = findViewById(R.id.player2_name);
         QuitButton = findViewById(R.id.QuitButton);
         QuitButton.setOnClickListener(this);
+
 
         player1Text.setText("Player 1: Waiting for opponent...");
         player2Text.setText("Player 2: Waiting for opponent...");
@@ -256,8 +261,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v == QuitButton)
-            quitGame();
-
+            customDialog.show();
     }
 
     private void quitGame() {
