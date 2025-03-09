@@ -26,5 +26,10 @@ public class King extends Soldier{
     protected void Move(int x, int y) {
         super.Move(x, y);
     }
+
+    @Override
+    public boolean isIdentical(Soldier selectedSoldier) {
+        return super.isIdentical(selectedSoldier);
+    }
 }
 

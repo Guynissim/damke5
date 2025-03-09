@@ -2,7 +2,6 @@ package com.example.damka;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,7 +22,8 @@ public class BoardGame extends View {
     private final int NUM_OF_SQUARES = 8;
     private Soldier selectedSoldier = null;
     private boolean isSoldierJumped = false; // Checks if jump
-    private int winnerside = 0;//Red - 1,Blue - 2,no winner yet - 0
+    private int winnerside = 0;//Red - 1, Blue - 2, no winner yet - 0
+    private boolean isMoving = false;// true - for FB updates, false - for ACTION_MOVE updates
 
     //Colors:
     private int crown;
@@ -32,9 +32,8 @@ public class BoardGame extends View {
     private final int kingOneCrown;
     private final int kingTwoCrown;
 
-    private final int squareOne;
-    private final int squareTwo;
-
+    private final int squareOne;//Bright - without soldiers
+    private final int squareTwo;//Dark - with soldiers
 
 
     // Fields for the Firebase:
@@ -70,7 +69,8 @@ public class BoardGame extends View {
                 boolean turn = (boolean) gameState.get("turn"); // Get turn from Firebase
 
                 Log.d("DEBUG", "Turn from Firebase: " + turn);
-                Log.d("DEBUG", "My playerId: " + playerId);
+                Log.d("DEBUG", "Player " + isPlayer1 + ", my playerId: " + playerId);
+
 
                 if (isPlayer1 == 1 && turn || isPlayer1 == 2 && !turn) {
                     isPlayerTurn = true;
@@ -88,11 +88,14 @@ public class BoardGame extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) { // TODO: WIERD THING HERE!
         super.onDraw(canvas);
         int w = canvas.getWidth() / NUM_OF_SQUARES;
-        makeSquaresArray(w);
-        drawBoard(canvas);
+        if (!isMoving) { // FB updates
+            makeSquaresArray(w);//Makes the new/first array from the FB.
+        }
+        drawBoard(canvas);//Draws the whole board
+
     }
 
     private void drawBoard(Canvas canvas) {
@@ -101,8 +104,12 @@ public class BoardGame extends View {
                 Square square = squares[i][j];
                 if (square != null) {
                     square.draw(canvas);
-                    if (square.soldier != null)
-                        square.soldier.draw(canvas);
+                    if (square.soldier != null) {
+                        if (selectedSoldier != null && square.soldier.isIdentical(selectedSoldier))
+                            selectedSoldier.draw(canvas);
+                        else
+                            square.soldier.draw(canvas);
+                    }
                 }
             }
         }
@@ -114,7 +121,6 @@ public class BoardGame extends View {
         int h = w;
         int color;
         if (boardState != null) {
-            Log.d("onDraw", "Applying pending board state.");
             for (int i = 0; i < NUM_OF_SQUARES; i++) {
                 for (int j = 0; j < NUM_OF_SQUARES; j++) {
                     int state = boardState[i][j];
@@ -153,7 +159,6 @@ public class BoardGame extends View {
     }
 
     public void updateBoardState(int[][] boardState) {
-        Log.d("updateBoardState", "Applying new board state.");
         for (int i = 0; i < boardState.length; i++) {
             Log.d("Row " + i, Arrays.toString(boardState[i]));
         }
@@ -192,23 +197,12 @@ public class BoardGame extends View {
         return boardStateList;
     }
 
-    private int[][] convertListToArray(List<List<Long>> boardStateList) {
-        int[][] board = new int[boardStateList.size()][boardStateList.get(0).size()];
-        for (int i = 0; i < boardStateList.size(); i++) {
-            for (int j = 0; j < boardStateList.get(i).size(); j++) {
-                board[i][j] = boardStateList.get(i).get(j).intValue(); // Convert Long to int
-            }
-        }
-        return board;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float touchX = event.getX();
         float touchY = event.getY();
         int action = event.getAction();
 
-        Log.d("onTouchEvent", "Action: " + action + ", X: " + touchX + ", Y: " + touchY);
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -230,12 +224,14 @@ public class BoardGame extends View {
                     int centerX = (int) touchX;
                     int centerY = (int) touchY;
                     selectedSoldier.Move(centerX, centerY);
+                    isMoving = true;
                     invalidate();
                     return true;
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
+                isMoving = false;
                 if (selectedSoldier != null) {
                     if (!isPlayerTurn) {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
@@ -243,13 +239,10 @@ public class BoardGame extends View {
                     } else if (isPlayer1 != selectedSoldier.side) {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "These are not your soldiers!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.d("ACTION_UP", "Released soldier.");
-                        updateColumnAndRow(selectedSoldier);
+                    } else { //if Turn and side are correct, Checking if Move is valid
+                        updateColumnAndRow(selectedSoldier);// Updates current column and Row for checking Movement.
                         if (!isValidSquare(selectedSoldier)) {
                             selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
-                        } else {
-                            updateColumnAndRow(selectedSoldier);
                         }
                         invalidate();
                         selectedSoldier = null;
@@ -269,13 +262,14 @@ public class BoardGame extends View {
         for (int i = 0; i < NUM_OF_SQUARES; i++) {
             for (int j = 0; j < NUM_OF_SQUARES; j++) {
                 Square square = squares[i][j];
-                if (square.didUserTouchMe(soldier.x, soldier.y) && square.soldier == null && square.color == Color.BLACK) {
+                if (square.didUserTouchMe(soldier.x, soldier.y) && square.soldier == null && square.color == squareTwo) {
                     Log.d("Square Check", "Square checked: column=" + j + ", row=" + i);
                     Log.d("Soldier Before", "Soldier: column=" + soldier.column + ", row=" + soldier.row);
                     isSoldierJumped = false;
                     if (soldier instanceof King) {
                         king = (King) soldier;
                         if (isValidMove(king)) {
+                            Toast.makeText(getContext(), "Valid Move!", Toast.LENGTH_SHORT).show();
                             king.Move(square.x + square.width / 2, square.y + square.height / 2);
                             square.soldier = king;
                             squares[king.lastColumn][king.lastRow].soldier = null;
@@ -289,6 +283,7 @@ public class BoardGame extends View {
                             return true;
                         }
                     } else if (isValidMove(soldier)) {
+                        Toast.makeText(getContext(), "Valid Move!", Toast.LENGTH_SHORT).show();
                         soldier.Move(square.x + square.width / 2, square.y + square.height / 2);
                         squares[soldier.lastColumn][soldier.lastRow].soldier = null;
                         updateLastPosition(soldier);
@@ -307,8 +302,8 @@ public class BoardGame extends View {
                                 Toast.makeText(getContext(), "The winner side is BLUE!!!", Toast.LENGTH_SHORT).show();
                             if (winnerside == 2)
                                 Toast.makeText(getContext(), "The winner side is Red!!!", Toast.LENGTH_SHORT).show();
-                            return true;
                         }
+                        return true;
                     }
                 }
             }

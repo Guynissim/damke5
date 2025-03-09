@@ -30,4 +30,10 @@ public class Soldier extends Shape {
         this.x = x;
         this.y = y;
     }
+
+    public boolean isIdentical(Soldier selectedSoldier) {
+        if (x == selectedSoldier.x && y == selectedSoldier.y && side == selectedSoldier.side)
+            return true;
+        return false;
+    }
 }

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
     private TextView player1Text, player2Text, gameIdText;
-    private String playerName1, playerName2,gameId, playerId;
+    private String player1Name, player2Name, gameId, playerId, player1Id, player2Id;
     private int playerSide;// 1 - Player1, 2 - Player2, 0 - Error
     private GameSessionManager gameSessionManager;
     private FireStoreManager firestoreManager;
@@ -49,25 +50,27 @@ public class GameActivity extends AppCompatActivity {
         player1Text = findViewById(R.id.player1_name);
         player2Text = findViewById(R.id.player2_name);
 
+        player1Text.setText("Player 1: Waiting for opponent...");
         player2Text.setText("Player 2: Waiting for opponent...");
 
-        // Fetch player name and update UI inside callback
+        // Fetch player name and update UI (before starting the game)
         firestoreManager.getUserProfile(playerId, task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
                 if (playerSide == 1) {
-                    playerName1 = task.getResult().getString("username");
-                    Log.d("DEBUG", "Username(Player1): " + playerName1);
-                    player1Text.setText("Player 1: " + playerName1);
-                } else {
-                    playerName2 = task.getResult().getString("username");
-                    Log.d("DEBUG", "Username(Player2): " + playerName2);
-                    player2Text.setText("Player 2: " + playerName2);
+                    player1Name = task.getResult().getString("username");
+                    Log.d("DEBUG", "Username(Player1): " + player1Name);
+                    player1Text.setText("Player 1: " + player1Name);
+                }
+                if (playerSide == 2) {
+                    player2Name = task.getResult().getString("username");
+                    Log.d("DEBUG", "Username(Player2): " + player2Name);
+                    player2Text.setText("Player 2: " + player2Name);
                 }
             } else {
                 Log.e("DEBUG", "Failed to get player info.");
             }
         });
-        // Fetch Board State First, Then Create BoardGame
+
         fetchBoardState();
     }
 
@@ -97,20 +100,35 @@ public class GameActivity extends AppCompatActivity {
 
     private void listenForPlayer2() {
         DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId).child("player2");
-
         gameRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String player2Id = (String) snapshot.getValue();
                 if (player2Id != null) {
                     Log.d("DEBUG", "Player 2 has joined! Player 1's movement is enabled.");
-                    // enable player1's movement
+                    if (playerSide == 2) { //Now both players' IDs are in player2's phone
+                        getPlayer1Id(playerId -> {
+                            if (playerId != null) {
+                                player1Id = playerId;
+                                Log.d("DEBUG", "player1Id: " + player1Id);
+                                getPlayerName(player1Id); // Call this method after player1Id is available
+                            } else {
+                                Log.e("DEBUG", "Failed to get player1Id from Firebase.");
+                            }
+                        });
+
+                        player1Text.setText("Player 1: " + player1Name);
+                    }
+                    if (playerSide == 1) { // already has both IDs
+                        getPlayerName(player2Id);
+                        player2Text.setText("Player 2: " + player2Name);
+                    }
+
                 } else {
                     Log.d("DEBUG", "Waiting for Player 2...");
                     // disable player1's movement
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("DEBUG", "Error listening for Player 2: " + error.getMessage());
@@ -161,12 +179,63 @@ public class GameActivity extends AppCompatActivity {
                 // Remove listener to prevent duplicate updates
                 gameRef.child("winnerside").removeEventListener(this);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("GameActivity", "Error in listenForWinnerSideChange()", error.toException());
             }
         });
     }
+
+    private void getPlayerName(String playerId) {
+        if (playerId == null) {
+            Log.e("getPlayerName()", "Error: playerId is null");
+            return;
+        }
+
+        firestoreManager.getUserProfile(playerId, task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                String username = task.getResult().getString("Users");
+                Log.d("getPlayerName()", "Fetched username: " + username);
+
+                if (playerId.equals(player1Id)) {
+                    player1Name = username;
+                    Log.d("getPlayerName()", "player1Name set: " + player1Name);
+                }
+                if (playerId.equals(player2Id)) {
+                    player2Name = username;
+                    Log.d("getPlayerName()", "player2Name set: " + player2Name);
+                }
+            } else {
+                Log.e("getPlayerName()", "Failed to fetch username from Firestore.");
+            }
+        });
+    }
+
+
+    private void getPlayer1Id(OnSuccessListener<String> callback) {
+        DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId).child("player1");
+        gameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String playerId = snapshot.getValue(String.class);
+                    Log.d("getPlayer1Id()", "player1Id: " + playerId);
+                    callback.onSuccess(playerId); // Pass the retrieved value
+                } else {
+                    Log.e("getPlayer1Id()", "player1Id not found.");
+                    callback.onSuccess(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("getPlayer1Id()", "Database error: " + error.getMessage());
+                callback.onSuccess(null);
+            }
+        });
+    }
+
 
     private int[][] convertListToArray(List<List<Long>> boardStateList) {
         if (boardStateList == null || boardStateList.isEmpty()) return null;
