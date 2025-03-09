@@ -35,7 +35,6 @@ public class BoardGame extends View {
     private final int squareOne;//Bright - without soldiers
     private final int squareTwo;//Dark - with soldiers
 
-
     // Fields for the Firebase:
     private GameSessionManager gameSessionManager;
     private int[][] boardState;
@@ -88,27 +87,32 @@ public class BoardGame extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) { // TODO: WIERD THING HERE!
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int w = canvas.getWidth() / NUM_OF_SQUARES;
         if (!isMoving) { // FB updates
             makeSquaresArray(w);//Makes the new/first array from the FB.
         }
         drawBoard(canvas);//Draws the whole board
-
     }
 
     private void drawBoard(Canvas canvas) {
+        // First, draw all squares
         for (int i = 0; i < NUM_OF_SQUARES; i++) {
             for (int j = 0; j < NUM_OF_SQUARES; j++) {
-                Square square = squares[i][j];
-                if (square != null) {
-                    square.draw(canvas);
-                    if (square.soldier != null) {
-                        if (selectedSoldier != null && square.soldier.isIdentical(selectedSoldier))
-                            selectedSoldier.draw(canvas);
-                        else
-                            square.soldier.draw(canvas);
+                if (squares[i][j] != null) {
+                    squares[i][j].draw(canvas); // Draw all board squares first
+                }
+            }
+        }
+        // Then, draw all soldiers on top of the board
+        for (int i = 0; i < NUM_OF_SQUARES; i++) {
+            for (int j = 0; j < NUM_OF_SQUARES; j++) {
+                if (squares[i][j] != null && squares[i][j].soldier != null) {
+                    if (selectedSoldier != null && squares[i][j].soldier.isIdentical(selectedSoldier)) {
+                        selectedSoldier.draw(canvas);
+                    } else {
+                        squares[i][j].soldier.draw(canvas);
                     }
                 }
             }
@@ -203,7 +207,6 @@ public class BoardGame extends View {
         float touchY = event.getY();
         int action = event.getAction();
 
-
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 for (int i = 0; i < NUM_OF_SQUARES; i++) {
@@ -212,7 +215,6 @@ public class BoardGame extends View {
                         if (square != null && square.didUserTouchMe((int) touchX, (int) touchY) && square.soldier != null) {
                             selectedSoldier = square.soldier;
                             Log.d("ACTION_DOWN", "Selected soldier at: " + i + ", " + j);
-                            invalidate();
                             return true;
                         }
                     }
@@ -224,6 +226,7 @@ public class BoardGame extends View {
                     int centerX = (int) touchX;
                     int centerY = (int) touchY;
                     selectedSoldier.Move(centerX, centerY);
+                    Log.d("ACTION_MOVE", "Soldier at: " + centerX + ", " + centerY);
                     isMoving = true;
                     invalidate();
                     return true;
@@ -236,9 +239,11 @@ public class BoardGame extends View {
                     if (!isPlayerTurn) {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "Wait for you turn!", Toast.LENGTH_SHORT).show();
+                        invalidate();
                     } else if (isPlayer1 != selectedSoldier.side) {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "These are not your soldiers!", Toast.LENGTH_SHORT).show();
+                        invalidate();
                     } else { //if Turn and side are correct, Checking if Move is valid
                         updateColumnAndRow(selectedSoldier);// Updates current column and Row for checking Movement.
                         if (!isValidSquare(selectedSoldier)) {
