@@ -103,7 +103,7 @@ public class GameActivity extends AppCompatActivity {
         gameRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String player2Id = (String) snapshot.getValue();
+                player2Id = (String) snapshot.getValue();
                 if (player2Id != null) {
                     Log.d("DEBUG", "Player 2 has joined! Player 1's movement is enabled.");
                     if (playerSide == 2) { //Now both players' IDs are in player2's phone
@@ -111,17 +111,14 @@ public class GameActivity extends AppCompatActivity {
                             if (playerId != null) {
                                 player1Id = playerId;
                                 Log.d("DEBUG", "player1Id: " + player1Id);
-                                getPlayerName(player1Id); // Call this method after player1Id is available
+                                setOpponentName(player1Id); // Call this method after player1Id is available
                             } else {
                                 Log.e("DEBUG", "Failed to get player1Id from Firebase.");
                             }
                         });
-
-                        player1Text.setText("Player 1: " + player1Name);
                     }
                     if (playerSide == 1) { // already has both IDs
-                        getPlayerName(player2Id);
-                        player2Text.setText("Player 2: " + player2Name);
+                        setOpponentName(player2Id);
                     }
 
                 } else {
@@ -129,6 +126,7 @@ public class GameActivity extends AppCompatActivity {
                     // disable player1's movement
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("DEBUG", "Error listening for Player 2: " + error.getMessage());
@@ -187,7 +185,7 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    private void getPlayerName(String playerId) {
+    private void setOpponentName(String playerId) {
         if (playerId == null) {
             Log.e("getPlayerName()", "Error: playerId is null");
             return;
@@ -195,16 +193,18 @@ public class GameActivity extends AppCompatActivity {
 
         firestoreManager.getUserProfile(playerId, task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
-                String username = task.getResult().getString("Users");
+                String username = task.getResult().getString("username");
                 Log.d("getPlayerName()", "Fetched username: " + username);
 
-                if (playerId.equals(player1Id)) {
+                if (playerSide == 2) {
                     player1Name = username;
                     Log.d("getPlayerName()", "player1Name set: " + player1Name);
+                    player1Text.setText("Player 2: " + player1Name);
                 }
-                if (playerId.equals(player2Id)) {
+                if (playerSide == 1) {
                     player2Name = username;
                     Log.d("getPlayerName()", "player2Name set: " + player2Name);
+                    player2Text.setText("Player 2: " + player2Name);
                 }
             } else {
                 Log.e("getPlayerName()", "Failed to fetch username from Firestore.");
