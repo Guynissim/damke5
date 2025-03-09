@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -18,8 +20,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView player1Text, player2Text, gameIdText;
+    private Button QuitButton;
     private String player1Name, player2Name, gameId, playerId, player1Id, player2Id;
     private int playerSide;// 1 - Player1, 2 - Player2, 0 - Error
     private GameSessionManager gameSessionManager;
@@ -49,6 +52,8 @@ public class GameActivity extends AppCompatActivity {
 
         player1Text = findViewById(R.id.player1_name);
         player2Text = findViewById(R.id.player2_name);
+        QuitButton = findViewById(R.id.QuitButton);
+        QuitButton.setOnClickListener(this);
 
         player1Text.setText("Player 1: Waiting for opponent...");
         player2Text.setText("Player 2: Waiting for opponent...");
@@ -199,7 +204,7 @@ public class GameActivity extends AppCompatActivity {
                 if (playerSide == 2) {
                     player1Name = username;
                     Log.d("getPlayerName()", "player1Name set: " + player1Name);
-                    player1Text.setText("Player 2: " + player1Name);
+                    player1Text.setText("Player 1: " + player1Name);
                 }
                 if (playerSide == 1) {
                     player2Name = username;
@@ -246,5 +251,24 @@ public class GameActivity extends AppCompatActivity {
             }
         }
         return board;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == QuitButton)
+            quitGame();
+
+    }
+
+    private void quitGame() {
+        if(playerSide == 1){
+
+
+
+
+        }
+        if(playerSide == 2){
+
+        }
     }
 }

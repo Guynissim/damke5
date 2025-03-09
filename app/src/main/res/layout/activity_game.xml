@@ -47,4 +47,12 @@
         android:layout_gravity="center"
         android:layout_marginTop="30dp" />
 
+    <Button
+        android:id="@+id/QuitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:text="Quit Game"
+        android:layout_marginBottom="30dp"/>
+
 </FrameLayout>
