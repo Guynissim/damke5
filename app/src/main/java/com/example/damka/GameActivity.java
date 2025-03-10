@@ -52,7 +52,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameIdText.setText("Game ID: " + gameId);
 
         customDialog = new CustomDialog(this);
-        customDialog.setContentView(R.layout.activity_custom_dialog);
 
         player1Text = findViewById(R.id.player1_name);
         player2Text = findViewById(R.id.player2_name);

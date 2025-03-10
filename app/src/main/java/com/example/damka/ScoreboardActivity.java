@@ -1,60 +1,64 @@
 package com.example.damka;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ScoreboardActivity extends AppCompatActivity {
-
-    private ListView scoreboardListView;
-    private ArrayList<String> scoreboardList;
-    private ArrayAdapter<String> adapter;
-    private DatabaseReference scoreboardRef;
+    private RecyclerView recyclerView;
+    private ScoreboardAdapter adapter;
+    private List<UserProfile> userList;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scoreboard);
 
-        scoreboardListView = findViewById(R.id.scoreboardListView);
-        scoreboardList = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, scoreboardList);
-        scoreboardListView.setAdapter(adapter);
+        recyclerView = findViewById(R.id.scoreboardRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        scoreboardRef = FirebaseDatabase.getInstance().getReference("scoreboard");
+        userList = new ArrayList<>();
+        adapter = new ScoreboardAdapter(userList);
+        recyclerView.setAdapter(adapter);
 
-        fetchScores();
+        db = FirebaseFirestore.getInstance();
+        loadScoreboard();
     }
 
-    private void fetchScores() {
-        scoreboardRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                scoreboardList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String playerName = snapshot.child("playerName").getValue(String.class);
-                    long wins = snapshot.child("wins").getValue(Long.class);
-                    scoreboardList.add(playerName + " - Wins: " + wins);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(ScoreboardActivity.this, "Failed to load scores.", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void loadScoreboard() {
+        db.collection("Users")
+                .orderBy("wins", Query.Direction.DESCENDING) // Sort by wins
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            userList.clear();
+                            for (DocumentSnapshot document : task.getResult()) {
+                                String username = document.getString("username");
+                                long wins = document.getLong("wins") != null ? document.getLong("wins") : 0;
+                                long losses = document.getLong("losses") != null ? document.getLong("losses") : 0;
+                                userList.add(new UserProfile(username, (int) wins, (int) losses));
+                            }
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Log.e("Scoreboard", "Error getting documents: ", task.getException());
+                            Toast.makeText(ScoreboardActivity.this, "Failed to load scoreboard.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

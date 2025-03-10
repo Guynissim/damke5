@@ -16,15 +16,16 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
         yesButton = findViewById(R.id.yesButton);
         yesButton.setOnClickListener(this);
         noButton.setOnClickListener(this);
+
     }
 
     @Override
     public void onClick(View view) {
         if (noButton == view) {
-
+            this.dismiss();
         }
         if (yesButton == view) {
-
+            // I will do it later
         }
     }
 }
