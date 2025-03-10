@@ -268,12 +268,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void quitGame() {
-        if(playerSide == 1){
-
+        if (playerSide == 1) {
 
 
         }
-        if(playerSide == 2){
+        if (playerSide == 2) {
 
         }
     }
