@@ -178,6 +178,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i("Error", "onDataChange: " + winnerside + " " + winnersideLong);
                     if (task.isSuccessful()) {
                         Log.d("GameActivity", isWin ? "Wins recorded" : "Losses recorded");
+
                     } else {
                         Log.e("GameActivity", "Failed to update user stats", task.getException());
                     }
@@ -185,6 +186,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 // Remove listener to prevent duplicate updates
                 gameRef.child("winnerside").removeEventListener(this);
+
+                startActivity(new Intent(GameActivity.this, MainMenuActivity.class));
+                finish();
             }
 
             @Override
