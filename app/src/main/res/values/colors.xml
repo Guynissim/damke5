@@ -12,6 +12,7 @@
 
     <!-- Background variations -->
     <color name="cream_dark">#E8DECB</color>
+    <color name="DarkTaupeGray">#49443A </color>
     <color name="background_color_1">#B8C0A9</color>
     <color name="background_color_2">#A9A295</color>
     <color name="background_color_3">#D6CCA9</color>
