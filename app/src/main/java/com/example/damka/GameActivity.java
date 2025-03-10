@@ -269,7 +269,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-
         }
         if(playerSide == 2){
 
