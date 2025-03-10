@@ -154,7 +154,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     boardGame.updateBoardState(boardState);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("GameActivity", "Error in listenForBoardState()");
