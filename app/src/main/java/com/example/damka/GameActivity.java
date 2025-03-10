@@ -265,13 +265,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             customDialog.show();
     }
 
-    private void quitGame() {
+    public void quitGame() {
+        DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);
         if (playerSide == 1) {
-
-
-        }
-        if (playerSide == 2) {
-
+            gameRef.child("winnerside").setValue(2); // Make Player 2 the winner
+        } else if (playerSide == 2) {
+            gameRef.child("winnerside").setValue(1); // Make Player 1 the winner
         }
     }
 }

@@ -8,15 +8,17 @@ import android.widget.Button;
 public class CustomDialog extends Dialog implements View.OnClickListener {
 
     private Button noButton, yesButton;
-    public CustomDialog(Context context) {
-        super(context);
+    private GameActivity gameActivity;
+
+    public CustomDialog(GameActivity activity) {
+        super(activity);
+        this.gameActivity = activity; // Store the reference
         setContentView(R.layout.activity_custom_dialog);
 
         noButton = findViewById(R.id.noButton);
+        noButton.setOnClickListener(this);
         yesButton = findViewById(R.id.yesButton);
         yesButton.setOnClickListener(this);
-        noButton.setOnClickListener(this);
-
     }
 
     @Override
@@ -25,7 +27,8 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
             this.dismiss();
         }
         if (yesButton == view) {
-            // I will do it later
+            gameActivity.quitGame();
+            dismiss();
         }
     }
 }
