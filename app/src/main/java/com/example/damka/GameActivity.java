@@ -248,7 +248,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-
     private int[][] convertListToArray(List<List<Long>> boardStateList) {
         if (boardStateList == null || boardStateList.isEmpty()) return null;
         int[][] board = new int[boardStateList.size()][boardStateList.get(0).size()];
