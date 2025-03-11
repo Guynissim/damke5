@@ -152,8 +152,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 if (boardStateFromFB != null) {
                     int[][] boardState = convertListToArray(boardStateFromFB);
                     boardGame.updateBoardState(boardState);
-                    gameSessionManager.hasAvailableMoves();
-
+                    gameSessionManager.checkAvailableMoves(gameId);
                 }
             }
             @Override

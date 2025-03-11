@@ -75,8 +75,39 @@ public class GameSessionManager {
         });
     }
 
-    public boolean hasAvailableMoves(String playerId){
-        
+    public void checkAvailableMoves(String gameId) {
+        gameRef.child("turn").get().addOnSuccessListener(dataSnapshot -> {
+            if (dataSnapshot.exists()) {
+                int side;
+                boolean turn = dataSnapshot.getValue(Boolean.class); //player1 - true, player2 - false
+                boolean hasMoves = hasAvailableMoves(turn);
+                if (!hasMoves) {
+                    if (turn) //player1 has no moves
+                        side = 2;
+                    else //player2 has no moves
+                        side = 1;
+                    updateWinner(gameId, side);
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Firebase", "Failed to get turn value", e);
+        });
+    }
+
+    public boolean hasAvailableMoves(boolean turn) {
+        String player = turn ? "player1" : "player2";
+
+        // Loop through the board and check if player has at least one valid move
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j].belongsTo(player)) { // Check if this piece belongs to the player
+                    if (canMove(i, j)) { // Check if it has valid moves
+                        return true; // At least one move is possible
+                    }
+                }
+            }
+        }
+        return false; // No moves available
     }
 
     public void listenToGameSession(String gameId, GameStateListener listener) {
