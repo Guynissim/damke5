@@ -152,8 +152,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 if (boardStateFromFB != null) {
                     int[][] boardState = convertListToArray(boardStateFromFB);
                     boardGame.updateBoardState(boardState);
-                    checkAvailableMoves();
-
+                    checkAvailableMoves();// Checks if current player cannot move - Loss
                 }
             }
 
@@ -168,10 +167,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         DatabaseReference gamRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);
         gamRef.child("turn").get().addOnSuccessListener(dataSnapshot -> {
             if (dataSnapshot.exists()) {
+                int side;
                 boolean turn = dataSnapshot.getValue(Boolean.class);
-                boolean hasMoves = hasAvailableMoves(turn);
+                boolean hasMoves = boardGame.hasAvailableMoves(turn);
                 if (!hasMoves) {
-                    int side;
                     if (turn)
                         side = 2;
                     else
@@ -182,10 +181,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }).addOnFailureListener(e -> {
             Log.e("Firebase", "Failed to get turn value", e);
         });
-    }
-
-    private boolean hasAvailableMoves(boolean turn) {
-
     }
 
     public void listenForWinnerSideChange() {

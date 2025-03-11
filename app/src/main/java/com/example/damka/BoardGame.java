@@ -201,6 +201,37 @@ public class BoardGame extends View {
         return boardStateList;
     }
 
+    public boolean hasAvailableMoves(boolean turn) {
+        int side;
+        if (turn)
+            side = 2;
+        else
+            side = 1;
+        for (int i = 0; i < NUM_OF_SQUARES; i++) {
+            for (int j = 0; j < NUM_OF_SQUARES; j++) {
+                Soldier soldier = squares[i][j].soldier;
+                if (soldier != null && soldier.side == side) {
+                    if (soldier instanceof King) {
+                        King king = (King) soldier;
+                        if (hasAvailableMoves(king))
+                            return true;
+                    } else if (hasAvailableMoves(soldier))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean hasAvailableMoves(King king) {
+        //TODO!!
+        return false;
+    }
+
+    public boolean hasAvailableMoves(Soldier soldier) {
+        //TODO!!
+        return false;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float touchX = event.getX();
