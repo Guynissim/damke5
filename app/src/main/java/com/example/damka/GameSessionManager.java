@@ -75,6 +75,10 @@ public class GameSessionManager {
         });
     }
 
+    public boolean hasAvailableMoves(String playerId){
+        
+    }
+
     public void listenToGameSession(String gameId, GameStateListener listener) {
         gameRef.child(gameId).addValueEventListener(new ValueEventListener() {
             @Override
