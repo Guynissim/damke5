@@ -222,13 +222,53 @@ public class BoardGame extends View {
         }
         return false;
     }
+
     public boolean hasAvailableMoves(King king) {
         //TODO!!
         return false;
     }
 
-    public boolean hasAvailableMoves(Soldier soldier) {
-        //TODO!!
+    public boolean hasAvailableMoves(Soldier soldier1) {
+        int side = soldier1.side;
+        int column = soldier1.column;
+        int row = soldier1.row;
+        Soldier soldier2;
+        if (side == 1) {
+            if (row == 0) {
+                soldier2 = squares[column + 1][row + 1].soldier;
+                if (soldier2 == null)
+                    return true;
+                else if (soldier2.side != side && column < 6 && squares[column + 2][row + 2].soldier == null) {
+                    return true;
+                }
+            } else if (row == 7) {
+                soldier2 = squares[column - 1][row - 1].soldier;
+                if (soldier2 == null)
+                    return true;
+                else if (soldier2.side != side && column < 6 && squares[column + 2][row - 2].soldier == null) {
+                    return true;
+                }
+            } else {
+                if (squares[column + 1][row + 1].soldier == null || squares[column + 1][row - 1].soldier == null)
+                    return true;
+                if(column >= 6){
+                    return false;
+                }
+                if (squares[column + 1][row + 1].soldier.side != side && squares.)
+
+            }
+        }
+        if (side == 2) {
+            if (row == 7) {
+                soldier2 = squares[column - 1][row - 1].soldier;
+                if (soldier2 == null)
+                    return true;
+                else if (soldier2.side != side && column > 1 && squares[column - 2][row - 2].soldier == null) {
+                    return true;
+                }
+            }
+
+        }
         return false;
     }
 
