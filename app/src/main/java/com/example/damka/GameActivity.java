@@ -152,14 +152,40 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 if (boardStateFromFB != null) {
                     int[][] boardState = convertListToArray(boardStateFromFB);
                     boardGame.updateBoardState(boardState);
-                    gameSessionManager.checkAvailableMoves(gameId);
+                    checkAvailableMoves();
+
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("GameActivity", "Error in listenForBoardState()");
             }
         });
+    }
+
+    private void checkAvailableMoves() {
+        DatabaseReference gamRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);
+        gamRef.child("turn").get().addOnSuccessListener(dataSnapshot -> {
+            if (dataSnapshot.exists()) {
+                boolean turn = dataSnapshot.getValue(Boolean.class);
+                boolean hasMoves = hasAvailableMoves(turn);
+                if (!hasMoves) {
+                    int side;
+                    if (turn)
+                        side = 2;
+                    else
+                        side = 1;
+                    gameSessionManager.updateWinner(gameId, side); // If Player 1 has no moves, Player 2 wins
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Firebase", "Failed to get turn value", e);
+        });
+    }
+
+    private boolean hasAvailableMoves(boolean turn) {
+
     }
 
     public void listenForWinnerSideChange() {
