@@ -167,21 +167,21 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         DatabaseReference gamRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);
         gamRef.child("turn").get().addOnSuccessListener(dataSnapshot -> {
             if (dataSnapshot.exists()) {
-                int side;
                 boolean turn = dataSnapshot.getValue(Boolean.class);
+                Log.d("CheckMoves", "Turn value from Firebase: " + turn);
                 boolean hasMoves = boardGame.hasAvailableMoves(turn);
+                Log.d("CheckMoves", "Has available moves: " + hasMoves);
                 if (!hasMoves) {
-                    if (turn)
-                        side = 2;
-                    else
-                        side = 1;
-                    gameSessionManager.updateWinner(gameId, side); // If Player 1 has no moves, Player 2 wins
+                    int side = turn ? 2 : 1;
+                    Log.d("CheckMoves", "No moves available. Updating winner to Player " + side);
+                    gameSessionManager.updateWinner(gameId, side);
                 }
             }
         }).addOnFailureListener(e -> {
             Log.e("Firebase", "Failed to get turn value", e);
         });
     }
+
 
     public void listenForWinnerSideChange() {
         DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);

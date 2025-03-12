@@ -213,22 +213,56 @@ public class BoardGame extends View {
                 if (soldier != null && soldier.side == side) {
                     if (soldier instanceof King) {
                         King king = (King) soldier;
-                        if (hasAvailableMoves(king))
+                        if (hasAvailableMoves(king)) {
+                            Log.d("HasMoves", "King at (" + i + "," + j + ") has a move.");
                             return true;
-                    } else if (hasAvailableMoves(soldier))
+                        }
+
+                    } else if (hasAvailableMoves(soldier)) {
+                        Log.d("HasMoves", "Soldier at (" + i + "," + j + ") has a move.");
                         return true;
+                    }
                 }
+            }
+        }
+        Log.d("HasMoves", "No moves available for side: " + side);
+        return false;
+    }
+
+    private boolean hasAvailableMoves(King king) {
+        int side = king.side;
+        int column = king.column;
+        int row = king.row;
+
+        int[] dx = {1, 1, -1, -1};
+        int[] dy = {1, -1, 1, -1};
+
+        for (int k = 0; k < 4; k++) {
+            int newCol = column + dx[k];
+            int newRow = row + dy[k];
+
+            while (newCol >= 0 && newCol < NUM_OF_SQUARES && newRow >= 0 && newRow < NUM_OF_SQUARES) {
+                Soldier soldier2 = squares[newCol][newRow].soldier;
+                if (soldier2 == null) {
+                    Log.d("HasMoves", "King has empty move at (" + newCol + "," + newRow + ")");
+                    return true;
+                } else if (soldier2.side != side) {
+                    int jumpCol = newCol + dx[k];
+                    int jumpRow = newRow + dy[k];
+                    if (jumpCol >= 0 && jumpCol < NUM_OF_SQUARES && jumpRow >= 0 && jumpRow < NUM_OF_SQUARES
+                            && squares[jumpCol][jumpRow].soldier == null) {
+                        Log.d("HasMoves", "King has jump move at (" + jumpCol + "," + jumpRow + ")");
+                        return true;
+                    }
+                }
+                newCol += dx[k];
+                newRow += dy[k];
             }
         }
         return false;
     }
 
-    public boolean hasAvailableMoves(King king) {
-        //TODO!!
-        return false;
-    }
-
-    public boolean hasAvailableMoves(Soldier soldier1) {
+    private boolean hasAvailableMoves(Soldier soldier1) {
         int side = soldier1.side;
         int column = soldier1.column;
         int row = soldier1.row;
