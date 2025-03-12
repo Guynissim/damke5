@@ -41,16 +41,16 @@ public class BoardGame extends View {
     List<List<Long>> boardStateFromFB;
     private String gameId, playerId;
     private boolean isPlayerTurn = false;
-    private int isPlayer1;
+    private int playerSide;
 
-    public BoardGame(Context context, GameSessionManager gameSessionManager, String gameId, String playerId, int isPlayer1, int[][] boardState) {
+    public BoardGame(Context context, GameSessionManager gameSessionManager, String gameId, String playerId, int playerSide, int[][] boardState) {
         super(context);
         this.squares = new Square[NUM_OF_SQUARES][NUM_OF_SQUARES];
         this.gameSessionManager = gameSessionManager;
         this.gameId = gameId;
         this.playerId = playerId;
         this.boardState = boardState;
-        this.isPlayer1 = isPlayer1;
+        this.playerSide = playerSide;
         playerOneColor = ContextCompat.getColor(getContext(), R.color.soldier_player_one);
         playerTwoColor = ContextCompat.getColor(getContext(), R.color.soldier_player_two);
         kingOneCrown = ContextCompat.getColor(getContext(), R.color.king_crown_one);
@@ -65,13 +65,13 @@ public class BoardGame extends View {
             @Override
             public void onGameStateChanged(Map<String, Object> gameState) {
                 boardStateFromFB = (List<List<Long>>) gameState.get("boardState");
-                boolean turn = (boolean) gameState.get("turn"); // Get turn from Firebase
+                boolean turn = (boolean) gameState.get("turn"); // Gets turn from Firebase: true - player1, false - player2
 
                 Log.d("DEBUG", "Turn from Firebase: " + turn);
-                Log.d("DEBUG", "Player " + isPlayer1 + ", my playerId: " + playerId);
+                Log.d("DEBUG", "Player " + playerSide + ", my playerId: " + playerId);
 
 
-                if (isPlayer1 == 1 && turn || isPlayer1 == 2 && !turn) {
+                if (playerSide == 1 && turn || playerSide == 2 && !turn) {
                     isPlayerTurn = true;
                 } else
                     isPlayerTurn = false;
@@ -174,9 +174,11 @@ public class BoardGame extends View {
         updateBoardState(getBoardStateFromSquares());
         Map<String, Object> gameState = new HashMap<>();
         gameState.put("boardState", getCurrentBoardStateAsList());
-        gameState.put("turn", isPlayer1 == 2);// player1 next - true, player2 next - false
+        gameState.put("turn", playerSide == 2);// player1 next - true, player2 next - false
         gameSessionManager.updateGameState(gameId, gameState);
         invalidate();
+        if (hasAvailableMoves())// Checks if current player cannot move - Loss
+            gameSessionManager.updateWinner(gameId, winnerside);
     }
 
     private int[][] getBoardStateFromSquares() {
@@ -201,12 +203,7 @@ public class BoardGame extends View {
         return boardStateList;
     }
 
-    public boolean hasAvailableMoves(boolean turn) {
-        int side;
-        if (turn)
-            side = 2;
-        else
-            side = 1;
+    public boolean hasAvailableMoves() {
         for (int i = 0; i < NUM_OF_SQUARES; i++) {
             for (int j = 0; j < NUM_OF_SQUARES; j++) {
                 Soldier soldier = squares[i][j].soldier;
@@ -371,7 +368,7 @@ public class BoardGame extends View {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "Wait for you turn!", Toast.LENGTH_SHORT).show();
                         invalidate();
-                    } else if (isPlayer1 != selectedSoldier.side) {
+                    } else if (playerSide != selectedSoldier.side) {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "These are not your soldiers!", Toast.LENGTH_SHORT).show();
                         invalidate();
