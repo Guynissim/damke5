@@ -225,7 +225,7 @@ public class BoardGame extends View {
 
     public boolean hasAvailableMoves(King king) {
         //TODO!!
-        return false;
+        return true;
     }
 
     public boolean hasAvailableMoves(Soldier soldier1) {
@@ -242,7 +242,7 @@ public class BoardGame extends View {
                     return true;
                 }
             } else if (row == 7) {
-                soldier2 = squares[column - 1][row - 1].soldier;
+                soldier2 = squares[column + 1][row - 1].soldier;
                 if (soldier2 == null)
                     return true;
                 else if (soldier2.side != side && column < 6 && squares[column + 2][row - 2].soldier == null) {
@@ -251,23 +251,49 @@ public class BoardGame extends View {
             } else {
                 if (squares[column + 1][row + 1].soldier == null || squares[column + 1][row - 1].soldier == null)
                     return true;
-                if(column >= 6){
-                    return false;
+                if (column < 6) {
+                    if (row == 1) {
+                        if (squares[column + 1][row + 1].soldier.side != side && squares[column + 2][row + 2].soldier == null)
+                            return true;
+                    } else if (row == 6) {
+                        if (squares[column + 1][row - 1].soldier.side != side && squares[column + 2][row - 2].soldier == null)
+                            return true;
+                    } else if (squares[column + 1][row + 1].soldier.side != side && squares[column + 2][row + 2].soldier == null ||
+                            squares[column + 1][row - 1].soldier.side != side && squares[column + 2][row - 2].soldier == null)
+                        return true;
                 }
-                if (squares[column + 1][row + 1].soldier.side != side && squares.)
-
             }
         }
         if (side == 2) {
             if (row == 7) {
-                soldier2 = squares[column - 1][row - 1].soldier;
+                soldier2 = squares[column - 1][row + 1].soldier;
                 if (soldier2 == null)
                     return true;
                 else if (soldier2.side != side && column > 1 && squares[column - 2][row - 2].soldier == null) {
                     return true;
                 }
+            } else if (row == 0) {
+                soldier2 = squares[column - 1][row + 1].soldier;
+                if (soldier2 == null)
+                    return true;
+                else if (soldier2.side != side && column > 1 && squares[column - 2][row + 2].soldier == null) {
+                    return true;
+                }
+            } else {
+                if (squares[column - 1][row + 1].soldier == null || squares[column - 1][row - 1].soldier == null)
+                    return true;
+                if (column > 1) {
+                    if (row == 1) {
+                        if (squares[column - 1][row + 1].soldier.side != side && squares[column - 2][row + 2].soldier == null)
+                            return true;
+                    } else if (row == 6) {
+                        if (squares[column - 1][row - 1].soldier.side != side && squares[column - 2][row - 2].soldier == null)
+                            return true;
+                    } else if (squares[column - 1][row + 1].soldier.side != side && squares[column - 2][row + 2].soldier == null ||
+                            squares[column - 1][row - 1].soldier.side != side && squares[column - 2][row - 2].soldier == null)
+                        return true;
+                }
             }
-
         }
         return false;
     }
@@ -346,7 +372,7 @@ public class BoardGame extends View {
                         king = (King) soldier;
                         if (isValidMove(king)) {
                             Toast.makeText(getContext(), "Valid Move!", Toast.LENGTH_SHORT).show();
-                            king.Move(square.x + square.width / 2, square.y + square.height / 2);
+                            king.Move(square.x + square.width / 2, square.y + square.height / 2);//maybe useless
                             square.soldier = king;
                             squares[king.lastColumn][king.lastRow].soldier = null;
                             updateLastPosition(king);
@@ -360,7 +386,7 @@ public class BoardGame extends View {
                         }
                     } else if (isValidMove(soldier)) {
                         Toast.makeText(getContext(), "Valid Move!", Toast.LENGTH_SHORT).show();
-                        soldier.Move(square.x + square.width / 2, square.y + square.height / 2);
+                        soldier.Move(square.x + square.width / 2, square.y + square.height / 2);//maybe useless
                         squares[soldier.lastColumn][soldier.lastRow].soldier = null;
                         updateLastPosition(soldier);
 
