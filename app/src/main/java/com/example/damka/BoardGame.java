@@ -174,11 +174,14 @@ public class BoardGame extends View {
         updateBoardState(getBoardStateFromSquares());
         Map<String, Object> gameState = new HashMap<>();
         gameState.put("boardState", getCurrentBoardStateAsList());
-        gameState.put("turn", playerSide == 2);// player1 next - true, player2 next - false
+        boolean nextTurn = playerSide == 2;
+        gameState.put("turn", nextTurn);// player1 next - true, player2 next - false
         gameSessionManager.updateGameState(gameId, gameState);
         invalidate();
-        if (hasAvailableMoves())// Checks if current player cannot move - Loss
+        if (!hasAvailableMoves(nextTurn)) {// Checks if next player cannot move - Loss
+            winnerside = nextTurn ? 2 : 1;
             gameSessionManager.updateWinner(gameId, winnerside);
+        }
     }
 
     private int[][] getBoardStateFromSquares() {
@@ -203,7 +206,10 @@ public class BoardGame extends View {
         return boardStateList;
     }
 
-    public boolean hasAvailableMoves() {
+    public boolean hasAvailableMoves(boolean turn) {
+        int side = turn ? 1 : 2;
+        Log.d("HasMoves", "Checking moves for side: " + side);
+
         for (int i = 0; i < NUM_OF_SQUARES; i++) {
             for (int j = 0; j < NUM_OF_SQUARES; j++) {
                 Soldier soldier = squares[i][j].soldier;
@@ -297,7 +303,7 @@ public class BoardGame extends View {
         }
         if (side == 2) {
             if (row == 7) {
-                soldier2 = squares[column - 1][row + 1].soldier;
+                soldier2 = squares[column - 1][row - 1].soldier;
                 if (soldier2 == null)
                     return true;
                 else if (soldier2.side != side && column > 1 && squares[column - 2][row - 2].soldier == null) {
