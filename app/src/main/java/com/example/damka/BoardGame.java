@@ -225,7 +225,7 @@ public class BoardGame extends View {
 
     public boolean hasAvailableMoves(King king) {
         //TODO!!
-        return true;
+        return false;
     }
 
     public boolean hasAvailableMoves(Soldier soldier1) {
