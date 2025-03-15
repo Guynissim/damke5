@@ -22,6 +22,7 @@ public class BoardGame extends View {
     private final int NUM_OF_SQUARES = 8;
     private Soldier selectedSoldier = null;
     private boolean isSoldierJumped = false; // Checks if jump
+    private int playerSide;
     private int winnerside = 0;//Red - 1, Blue - 2, no winner yet - 0
     private boolean isMoving = false;// true - for FB updates, false - for ACTION_MOVE updates
 
@@ -41,7 +42,8 @@ public class BoardGame extends View {
     List<List<Long>> boardStateFromFB;
     private String gameId, playerId;
     private boolean isPlayerTurn = false;
-    private int playerSide;
+    public boolean isPlayer2InGame = false;
+
 
     public BoardGame(Context context, GameSessionManager gameSessionManager, String gameId, String playerId, int playerSide, int[][] boardState) {
         super(context);
@@ -70,11 +72,11 @@ public class BoardGame extends View {
                 Log.d("DEBUG", "Turn from Firebase: " + turn);
                 Log.d("DEBUG", "Player " + playerSide + ", my playerId: " + playerId);
 
-
                 if (playerSide == 1 && turn || playerSide == 2 && !turn) {
                     isPlayerTurn = true;
                 } else
                     isPlayerTurn = false;
+
 
                 invalidate(); // Redraw board
             }
@@ -161,6 +163,11 @@ public class BoardGame extends View {
             }
         }
     }
+
+    public void updatePlayer2State(boolean a) {// When player2 joins the game
+        isPlayer2InGame = a;
+    }
+
 
     public void updateBoardState(int[][] boardState) {
         for (int i = 0; i < boardState.length; i++) {
@@ -370,7 +377,12 @@ public class BoardGame extends View {
             case MotionEvent.ACTION_UP:
                 isMoving = false;
                 if (selectedSoldier != null) {
-                    if (!isPlayerTurn) {
+                    if (!isPlayer2InGame){
+                        selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
+                        Toast.makeText(getContext(), "Wait for Player2 to join the game!", Toast.LENGTH_SHORT).show();
+                        invalidate();
+                    }
+                    else if (!isPlayerTurn) {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "Wait for you turn!", Toast.LENGTH_SHORT).show();
                         invalidate();
@@ -378,7 +390,7 @@ public class BoardGame extends View {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "These are not your soldiers!", Toast.LENGTH_SHORT).show();
                         invalidate();
-                    } else { //if Turn and side are correct, Checking if Move is valid
+                    } else { //if player2 is in game and turn and side are correct, Checking if move is valid
                         updateColumnAndRow(selectedSoldier);// Updates current column and Row for checking Movement.
                         if (!isValidSquare(selectedSoldier)) {
                             selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);

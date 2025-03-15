@@ -114,6 +114,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 player2Id = (String) snapshot.getValue();
                 if (player2Id != null) {
+                    boardGame.updatePlayer2State(true);//Enables movement
                     Log.d("DEBUG", "Player 2 has joined! Player 1's movement is enabled.");
                     if (playerSide == 2) { //Now both players' IDs are in player2's phone
                         getPlayer1Id(playerId -> {
