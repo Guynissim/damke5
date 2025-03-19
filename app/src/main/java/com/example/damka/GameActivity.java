@@ -186,8 +186,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
 
-                // Remove listener to prevent duplicate updates
+                // Remove listener to prevent duplicate updates and the Ref to the ended game
                 gameRef.child("winnerside").removeEventListener(this);
+                gameRef.removeValue();
 
                 startActivity(new Intent(GameActivity.this, MainMenuActivity.class));
                 finish();

@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class ConnectToGameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button createGameButton, joinGameButton;
+    Button createGameButton, joinGameButton, joinRanGameButton;
     GameSessionManager gameSessionManager;
     AuthManager authManager;
     FireStoreManager firestoreManager;
@@ -65,9 +65,10 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
 
     private void joinGame() {
         String currentPlayerId = authManager.getCurrentUserId();
+        int playerSide = 2;
         firestoreManager.getWaitingGame(task -> {
             if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
-                int playerSide = 2;
+
                 String gameId = task.getResult().getDocuments().get(0).getId();
                 Log.d("DEBUG", "Joining a game: " + gameId);
 
