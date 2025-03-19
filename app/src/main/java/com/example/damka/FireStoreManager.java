@@ -68,20 +68,5 @@ public class FireStoreManager {
                 .addOnCompleteListener(listener);
     }
 
-    // Update game details (game state, moves, etc.)
-    public void updateGameMetadata(String gameId, Map<String, Object> gameData, OnCompleteListener<Void> listener) {
-        db.collection("Games").document(gameId)
-                .set(gameData, SetOptions.merge())
-                .addOnCompleteListener(listener);
-    }
-
-    // Check if a specific game exists
-    public void doesGameExist(String gameId, OnCompleteListener<DocumentSnapshot> listener) {
-        db.collection("Games").document(gameId)
-                .get()
-                .addOnCompleteListener(listener);
-    }
-
-
 }
 

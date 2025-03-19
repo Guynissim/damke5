@@ -16,8 +16,7 @@ import java.util.UUID;
 
 public class ConnectToGameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button createGameButton, joinGameButton, joinRanGameButton;
-    EditText joinGameEditText;
+    Button createGameButton, joinGameButton;
     GameSessionManager gameSessionManager;
     AuthManager authManager;
     FireStoreManager firestoreManager;
