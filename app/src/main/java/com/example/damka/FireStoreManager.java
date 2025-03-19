@@ -49,7 +49,6 @@ public class FireStoreManager {
     public void getWaitingGame(OnCompleteListener<QuerySnapshot> listener) {
         db.collection("WaitingGames")
                 .orderBy("createdAt", Query.Direction.DESCENDING) // Order by latest
-                .limit(1) // Get only the most recent game
                 .get()
                 .addOnCompleteListener(listener);
     }
