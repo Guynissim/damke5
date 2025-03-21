@@ -191,7 +191,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 gameRef.removeValue();
 
                 // Send the result back to MainMenuActivity
-                Intent resultIntent = new Intent(GameActivity.this, MainMenuActivity.class);
+                Intent resultIntent = new Intent();
                 resultIntent.putExtra("isWin", isWin);
                 setResult(RESULT_OK, resultIntent); // Send result back
                 finish();
