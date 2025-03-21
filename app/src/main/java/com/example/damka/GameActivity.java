@@ -166,18 +166,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public void listenForWinnerSideChange() {
         DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);
-        gameRef.child("winnerside").addValueEventListener(new ValueEventListener() {
+        gameRef.child("winnerSide").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Long winnersideLong = snapshot.getValue(Long.class);
                 if (winnersideLong == 0)
                     return;
-                int winnerside = winnersideLong.intValue();
+                int winnerSide = winnersideLong.intValue();
                 // Check if the current player is the winner
-                boolean isWin = (winnerside == playerSide);
+                boolean isWin = (winnerSide == playerSide);
                 // Update user stats accordingly
                 firestoreManager.updateUserStats(playerId, isWin, task -> {
-                    Log.i("Error", "onDataChange: " + winnerside + " " + winnersideLong);
+                    Log.i("Error", "onDataChange: " + winnerSide + " " + winnersideLong);
                     if (task.isSuccessful()) {
                         Log.d("GameActivity", isWin ? "Wins recorded" : "Losses recorded");
 
@@ -187,10 +187,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 });
 
                 // Remove listener to prevent duplicate updates and the Ref to the ended game
-                gameRef.child("winnerside").removeEventListener(this);
+                gameRef.child("winnerSide").removeEventListener(this);
                 gameRef.removeValue();
 
-                startActivity(new Intent(GameActivity.this, MainMenuActivity.class));
+                // Send the result back to MainMenuActivity
+                Intent resultIntent = new Intent(GameActivity.this, MainMenuActivity.class);
+                resultIntent.putExtra("isWin", isWin);
+                setResult(RESULT_OK, resultIntent); // Send result back
                 finish();
             }
 
@@ -272,9 +275,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void quitGame() {
         DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);
         if (playerSide == 1) {
-            gameRef.child("winnerside").setValue(2); // Make Player 2 the winner
+            gameRef.child("winnerSide").setValue(2); // Make Player 2 the winner
         } else if (playerSide == 2) {
-            gameRef.child("winnerside").setValue(1); // Make Player 1 the winner
+            gameRef.child("winnerSide").setValue(1); // Make Player 1 the winner
         }
     }
 }

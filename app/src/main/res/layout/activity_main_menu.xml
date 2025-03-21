@@ -66,4 +66,15 @@
             android:textSize="18sp" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/userNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Name: "
+        android:textColor="@color/chocolate_brown"
+        android:textSize="18sp"
+        android:textStyle="italic" />
+
 </LinearLayout>

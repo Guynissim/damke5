@@ -3,18 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/WarmBeige"
+    android:orientation="vertical"
     tools:context=".ConnectToGameActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
-        android:text=" There are 2 ways to play the game.\n create a game or join a game!"
         android:fontFamily="serif"
-        android:textSize="23dp"
+        android:text=" There are 2 ways to play the game.\n create a game or join a game!"
         android:textColor="@color/colorPrimary"
+        android:textSize="23dp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -26,8 +26,8 @@
             android:id="@+id/createGameButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="serif"
             android:layout_gravity="center"
+            android:fontFamily="serif"
             android:text="Create game"
             android:textSize="22dp" />
 

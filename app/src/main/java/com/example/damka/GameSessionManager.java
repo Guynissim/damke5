@@ -29,7 +29,7 @@ public class GameSessionManager {
         initialState.put("player2", null);
         initialState.put("turn", true); //player1 - true, player2 - false
         initialState.put("boardState", getInitialBoardState());
-        initialState.put("winnerside", 0); // player1 - 1,player2 - 2, no winner yet - 0
+        initialState.put("winnerSide", 0); // player1 - 1,player2 - 2, no winner yet - 0
 
         gameRef.child(gameId).setValue(initialState).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -95,13 +95,12 @@ public class GameSessionManager {
     }
 
     public void updateWinner(String gameId, int winnerSide) {
-        if (gameId == null || gameId.isEmpty()) {
+        if (gameId == null) {
             Log.e("GameSessionManager", "Game ID is null or empty. Cannot update winner.");
             return;
         }
 
-        DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference("GameSessions").child(gameId);
-        gameRef.child("winnerside").setValue(winnerSide)
+        gameRef.child(gameId).child("winnerSide").setValue(winnerSide)
                 .addOnSuccessListener(aVoid -> Log.d("GameSessionManager", "Winner updated successfully: " + winnerSide))
                 .addOnFailureListener(e -> Log.e("GameSessionManager", "Failed to update winner", e));
     }

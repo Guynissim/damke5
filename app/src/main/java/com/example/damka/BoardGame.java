@@ -377,12 +377,11 @@ public class BoardGame extends View {
             case MotionEvent.ACTION_UP:
                 isMoving = false;
                 if (selectedSoldier != null) {
-                    if (!isPlayer2InGame){
+                    if (!isPlayer2InGame) {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "Wait for Player2 to join the game!", Toast.LENGTH_SHORT).show();
                         invalidate();
-                    }
-                    else if (!isPlayerTurn) {
+                    } else if (!isPlayerTurn) {
                         selectedSoldier.Move(selectedSoldier.lastX, selectedSoldier.lastY);
                         Toast.makeText(getContext(), "Wait for you turn!", Toast.LENGTH_SHORT).show();
                         invalidate();
@@ -426,11 +425,10 @@ public class BoardGame extends View {
                             squares[king.lastColumn][king.lastRow].soldier = null;
                             updateLastPosition(king);
                             handleMove();
-                            Log.d("Snap Success", "King snapped to valid square: " + square.x + ", " + square.y);
+                            Log.d("Snap Success", "King snapped to valid square: " + square.column + ", " + square.row);
                             invalidate();
-                            if (isSoldierJumped) {
-                                checkAndDisplayWinner();
-                            }
+                            checkAndDisplayWinner();
+
                             return true;
                         }
                     } else if (isValidMove(soldier)) {
@@ -444,7 +442,7 @@ public class BoardGame extends View {
                             square.soldier = king;
                         } else
                             square.soldier = soldier;
-                        Log.d("Snap Success", "Soldier snapped to valid square: " + square.x + ", " + square.y);
+                        Log.d("Snap Success", "Soldier snapped to valid square: " + square.column + ", " + square.row);
                         handleMove();
                         invalidate();
                         if (isSoldierJumped) {
@@ -658,8 +656,10 @@ public class BoardGame extends View {
         }
         // Determine the winner
         if (!side1HasSoldiers) {
+            Log.d("isGameOver", "winnerSide - 2 ");
             return 2; // Side 2 wins
         } else if (!side2HasSoldiers) {
+            Log.d("isGameOver", "winnerSide - 1 ");
             return 1; // Side 1 wins
         }
 
@@ -667,7 +667,7 @@ public class BoardGame extends View {
     }
 
     public void checkAndDisplayWinner() {
-        if (isSoldierJumped == true) {
+        if (isSoldierJumped) {
             int winnerside = isGameOver();
             if (winnerside == 0)
                 return; // No winner yet

@@ -2,27 +2,43 @@ package com.example.damka;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
-
+    private TextView userNameTextView;
     private Button newGameButton, loginLogoutButton, scoreboardButton;
+    private String userId;
     private FirebaseAuth mAuth;
+    private AuthManager authManager;
+    private FirebaseUser currentUser;
+    private FireStoreManager fireStoreManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        fireStoreManager = new FireStoreManager();
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        // Initialize buttons
+        authManager = new AuthManager();
+        currentUser = mAuth.getCurrentUser();
+
+        // Initialize buttons and TextView
+        userNameTextView = findViewById(R.id.userNameTextView);
         newGameButton = findViewById(R.id.newGameButton);
         newGameButton.setOnClickListener(this);
         scoreboardButton = findViewById(R.id.scoreboardButton);
@@ -32,12 +48,15 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
         if (currentUser != null) {
             loginLogoutButton.setText("Logout");
+            userId = authManager.getCurrentUserId();
+            Log.d("userId", "userId: " + userId);
+            loadUserDetails();
         }
     }
 
+
     @Override
     public void onClick(View v) {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
         if (v == newGameButton) {
             if (loginLogoutButton.getText().equals("Login")) {
                 Toast.makeText(this, "Unable to start a game. Log in first.", Toast.LENGTH_SHORT).show();
@@ -59,9 +78,23 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 // User is logged in; log them out
                 mAuth.signOut();
                 loginLogoutButton.setText("Login");
+                userNameTextView.setText("Name: ");
                 Toast.makeText(MainMenuActivity.this, "Logged out successfully.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void loadUserDetails() {
+        fireStoreManager.getUserProfile(userId, task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                String userName = task.getResult().getString("username");
+                Log.d("userName", "userName: " + userName);
+                userNameTextView.setText("Name:  " + userName);
+
+            } else {
+                Log.e("DEBUG", "Failed to get player info.");
+            }
+        });
     }
 
 }

@@ -1,5 +1,9 @@
 package com.example.damka;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -16,10 +20,11 @@ import java.util.UUID;
 
 public class ConnectToGameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button createGameButton, joinGameButton;
-    GameSessionManager gameSessionManager;
-    AuthManager authManager;
-    FireStoreManager firestoreManager;
+    private Button createGameButton, joinGameButton;
+    private GameSessionManager gameSessionManager;
+    private AuthManager authManager;
+    private FireStoreManager firestoreManager;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,25 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
         gameSessionManager = new GameSessionManager();
         authManager = new AuthManager();
         firestoreManager = new FireStoreManager();
+
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            Intent intent = new Intent();
+                            Intent data = result.getData();
+                            boolean isWin = data.getBooleanExtra("winnerSide", false);
+                            displayLastResult(isWin);
+                        }
+                    }
+                });
+    }
+
+    private void displayLastResult(boolean isWin) {
+        String message = isWin ? "🎉 You Won!" : "😢 You Lost.";
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
