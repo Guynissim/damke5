@@ -493,12 +493,12 @@ public class BoardGame extends View {
         for (int i = 1; i <= columnStep; i++) {
             int intermediateColumn = king.lastColumn + i * colDirection;
             int intermediateRow = king.lastRow + i * rowDirection;
-            Square intermediateSquare = squares[intermediateColumn][intermediateRow];
+            Square intermediateSquare = squares[intermediateColumn][intermediateRow];// A square in path
             Soldier middleSoldier = intermediateSquare.soldier;
             if (middleSoldier != null) {
                 if (middleSoldier.side != king.side && !hasJumped) {
                     // Valid jump over an opponent soldier
-                    hasJumped = true;
+                    hasJumped = true;//For disabling jumping 2 soldiers at once
                     jumpedEnemyColumn = intermediateColumn;
                     jumpedEnemyRow = intermediateRow;
                     Log.d("KingMove", "Jumping over enemy soldier at column=" + intermediateColumn + ", row=" + intermediateRow);
