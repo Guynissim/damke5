@@ -7,6 +7,8 @@ import android.widget.Button;
 
 public class CustomDialog extends Dialog implements View.OnClickListener {
 
+
+
     private Button noButton, yesButton;
     private GameActivity gameActivity;
 
