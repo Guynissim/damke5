@@ -56,7 +56,7 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
     }
 
     private void displayLastResult(boolean isWin) {
-        String message = isWin ? "🎉 You Won!" : "😢 You Lost.";
+        String message = isWin ? "🎉 You Won!" : " You Lost.";
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
