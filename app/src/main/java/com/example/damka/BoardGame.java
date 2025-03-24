@@ -77,7 +77,6 @@ public class BoardGame extends View {
                 } else
                     isPlayerTurn = false;
 
-
                 invalidate(); // Redraw board
             }
 
