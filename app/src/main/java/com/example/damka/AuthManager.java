@@ -23,6 +23,7 @@ public class AuthManager {
                         // Authentication succeeded
                         String userId = auth.getCurrentUser().getUid();
                         Map<String, Object> user = new HashMap<>();
+                        user.put("email", email);
                         user.put("username", username);
                         user.put("wins", 0);
                         user.put("losses", 0);
