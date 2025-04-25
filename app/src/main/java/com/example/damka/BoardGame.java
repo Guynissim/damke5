@@ -27,7 +27,6 @@ public class BoardGame extends View {
     private boolean isMoving = false;// true - for FB updates, false - for ACTION_MOVE updates
 
     //Colors:
-    private int crown;
     private final int playerOneColor;
     private final int playerTwoColor;
     private final int kingOneCrown;
@@ -460,6 +459,7 @@ public class BoardGame extends View {
     }
 
     private King becomeKing(Soldier soldier) {
+        int crown = 0;
         int x = soldier.x;
         int y = soldier.y;
         int side = soldier.side;
