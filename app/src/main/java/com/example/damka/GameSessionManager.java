@@ -128,12 +128,6 @@ public class GameSessionManager {
         return boardStateList;
     }
 
-    // Define the interface for callback
-    public interface GameDataListener {
-        void onGameDataReceived(Map<String, Object> gameState);
-    }
-
-
     public interface GameStateListener {
         void onGameStateChanged(Map<String, Object> gameState);
 
