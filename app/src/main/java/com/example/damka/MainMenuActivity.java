@@ -7,11 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,15 +54,19 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         if (v == newGameButton) {
             if (loginLogoutButton.getText().equals("Login")) {
-                Toast.makeText(this, "Unable to start a game. Log in first.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You must log in first.", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(this, ConnectToGameActivity.class);
                 startActivity(intent);
             }
         }
         if (v == scoreboardButton) {
-            Intent intent = new Intent(this, ScoreboardActivity.class);
-            startActivity(intent);
+            if (loginLogoutButton.getText().equals("Login")) {
+                Toast.makeText(this, "You must log in first.", Toast.LENGTH_SHORT).show();
+            } else{
+                Intent intent = new Intent(this, ScoreboardActivity.class);
+                startActivity(intent);
+            }
         }
         if (v == loginLogoutButton) {
             if (loginLogoutButton.getText() != "Logout") {
@@ -75,7 +74,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
             } else {
-                // User is logged in; log them out
                 mAuth.signOut();
                 loginLogoutButton.setText("Login");
                 userNameTextView.setText("Name: ");
