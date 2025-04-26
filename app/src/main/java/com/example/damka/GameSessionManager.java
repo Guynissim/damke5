@@ -130,7 +130,6 @@ public class GameSessionManager {
 
     public interface GameStateListener {
         void onGameStateChanged(Map<String, Object> gameState);
-
         void onError(@NonNull Exception e);
     }
 }
