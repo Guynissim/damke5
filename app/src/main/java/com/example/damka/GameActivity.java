@@ -97,7 +97,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 FrameLayout boardContainer = findViewById(R.id.board_container);
                 boardContainer.addView(boardGame);
 
-                // Listen for Player 2 and Board Updates
+                // Listeners:
                 listenForPlayer2();
                 listenForBoardState();
                 listenForWinnerSideChange();
