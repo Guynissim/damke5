@@ -171,9 +171,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Long winnersideLong = snapshot.getValue(Long.class);
-                if (winnersideLong == 0)
+                if (winnersideLong == null)
                     return;
                 int winnerSide = winnersideLong.intValue();
+                if (winnerSide == 0)
+                    return;
                 // Check if the current player is the winner
                 boolean isWin = (winnerSide == playerSide);
                 // Update user stats accordingly

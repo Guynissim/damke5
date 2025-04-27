@@ -40,9 +40,9 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
         authManager = new AuthManager();
         firestoreManager = new FireStoreManager();
 
+
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
-
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
@@ -54,8 +54,9 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
                 });
     }
 
+
     private void displayLastResult(boolean isWin) {
-        String message = isWin ? "🎉 You Won!" : " You Lost.";
+        String message = isWin ? "You Won!!!" : " You Lost...";
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
@@ -116,6 +117,6 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
         intent.putExtra("gameId", gameId);
         intent.putExtra("playerId", playerId);
         intent.putExtra("playerSide", playerSide);
-        startActivity(intent);
+        activityResultLauncher.launch(intent);
     }
 }
