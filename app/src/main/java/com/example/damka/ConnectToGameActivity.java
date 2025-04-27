@@ -46,7 +46,6 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
-                            Intent intent = new Intent();
                             Intent data = result.getData();
                             boolean isWin = data.getBooleanExtra("winnerSide", false);
                             displayLastResult(isWin);
