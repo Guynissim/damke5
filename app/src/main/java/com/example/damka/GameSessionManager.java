@@ -118,10 +118,10 @@ public class GameSessionManager {
         };
 
         List<List<Integer>> boardStateList = new ArrayList<>();
-        for (int[] row : initialBoard) {
+        for (int i = 0; i < initialBoard.length; i++) {
             List<Integer> rowList = new ArrayList<>();
-            for (int cell : row) {
-                rowList.add(cell);
+            for (int j = 0; j < initialBoard.length; j++) {
+                rowList.add(initialBoard[i][j]);
             }
             boardStateList.add(rowList);
         }

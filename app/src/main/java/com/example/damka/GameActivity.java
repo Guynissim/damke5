@@ -260,7 +260,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (boardStateList == null || boardStateList.isEmpty()) return null;
         int[][] board = new int[boardStateList.size()][boardStateList.get(0).size()];
         for (int i = 0; i < boardStateList.size(); i++) {
-            for (int j = 0; j < boardStateList.get(i).size(); j++) {
+            for (int j = 0; j < boardStateList.size(); j++) {
                 board[i][j] = boardStateList.get(i).get(j).intValue();
             }
         }
