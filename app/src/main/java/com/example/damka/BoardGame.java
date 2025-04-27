@@ -423,7 +423,6 @@ public class BoardGame extends View {
                             Log.d("Snap Success", "King snapped to valid square: " + square.column + ", " + square.row);
                             invalidate();
                             checkAndDisplayWinner();
-
                             return true;
                         }
                     } else if (isValidMove(soldier)) {
@@ -441,11 +440,7 @@ public class BoardGame extends View {
                         handleMove();
                         invalidate();
                         if (isSoldierJumped) {
-                            winnerside = isGameOver();
-                            if (winnerside == 1)
-                                Toast.makeText(getContext(), "The winner side is BLUE!!!", Toast.LENGTH_SHORT).show();
-                            if (winnerside == 2)
-                                Toast.makeText(getContext(), "The winner side is Red!!!", Toast.LENGTH_SHORT).show();
+                            checkAndDisplayWinner();
                         }
                         return true;
                     }
