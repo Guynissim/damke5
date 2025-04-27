@@ -89,13 +89,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameRef.child("boardState").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<List<Long>> boardStateFromFB = (List<List<Long>>) task.getResult().getValue();
-                int[][] boardState = boardStateFromFB != null ? convertListToArray(boardStateFromFB) : null;
+                if (boardStateFromFB != null) {
+                    int[][] boardState = convertListToArray(boardStateFromFB);
+                    // Create BoardGame after getting boardState
+                    boardGame = new BoardGame(this, gameSessionManager, gameId, playerId, playerSide, boardState);
 
-                // Create BoardGame after getting boardState
-                boardGame = new BoardGame(this, gameSessionManager, gameId, playerId, playerSide, boardState);
-
-                FrameLayout boardContainer = findViewById(R.id.board_container);
-                boardContainer.addView(boardGame);
+                    FrameLayout boardContainer = findViewById(R.id.board_container);
+                    boardContainer.addView(boardGame);
+                }
 
                 // Listeners:
                 listenForPlayer2();

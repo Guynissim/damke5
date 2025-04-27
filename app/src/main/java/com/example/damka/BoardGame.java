@@ -168,9 +168,6 @@ public class BoardGame extends View {
 
 
     public void updateBoardState(int[][] boardState) {
-        for (int i = 0; i < boardState.length; i++) {
-            Log.d("Row " + i, Arrays.toString(boardState[i]));
-        }
         this.boardState = boardState;
         invalidate();
     }
