@@ -47,14 +47,11 @@ public class ConnectToGameActivity extends AppCompatActivity implements View.OnC
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
                             Intent data = result.getData();
-                            if (data == null)
-                                Log.d("activityResultLauncher", "winnerSide is null");
-                            else {
+                            if (data == null) {
                                 boolean isWin = data.getBooleanExtra("isWin", false);
                                 Log.d("activityResultLauncher", "isWin:" + isWin);
                                 displayLastResult(isWin);
                             }
-
                         }
                     }
                 });
