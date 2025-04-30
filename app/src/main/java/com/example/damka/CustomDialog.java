@@ -23,7 +23,7 @@ public class CustomDialog extends Dialog implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (noButton == view) {
-            this.dismiss();
+            dismiss();
         }
         if (yesButton == view) {
             gameActivity.quitGame();
