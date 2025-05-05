@@ -439,9 +439,7 @@ public class BoardGame extends View {
                         Log.d("Snap Success", "Soldier snapped to valid square: " + square.column + ", " + square.row);
                         handleMove();
                         invalidate();
-                        if (isSoldierJumped) {
-                            checkAndDisplayWinner();
-                        }
+                        checkAndDisplayWinner();
                         return true;
                     }
                 }
